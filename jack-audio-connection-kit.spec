@@ -9,8 +9,7 @@ Version:	0.50.0
 Release:	1
 License:	GPL/LGPL
 Group:		Daemons
-Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/jackit/%{name}-%{version}.tar.gz
-Patch0:		%{name}-libsndfile1.patch
+Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
 URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
@@ -111,7 +110,6 @@ Przyk³adowy klient zestawu Jack u¿ywaj±cy toolkitu FLTK.
 
 %prep
 %setup -q
-#%%patch -p1
 
 %build
 %{__autoconf}
