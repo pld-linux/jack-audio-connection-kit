@@ -15,7 +15,6 @@ Patch0:		%{name}-opt.patch
 URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
-BuildRequires:	fltk-devel >= 1.1.3
 BuildRequires:	glib-devel >= 1.0.0
 %{?_with_cap:BuildRequires:	libcap-devel}
 BuildRequires:	libsndfile-devel >= 1.0.0
