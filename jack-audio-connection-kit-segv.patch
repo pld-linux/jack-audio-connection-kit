@@ -1,0 +1,70 @@
+This patch fixes jackd crash when it was run without mounted /dev/shm.
+
+Signed-off-by: Pawe³ Sikora <pluto@pld-linux.org>
+
+ jack/shm.h    |    2 +-
+ jackd/jackd.c |    8 ++++++--
+ libjack/shm.c |    7 +++++--
+ 3 files changed, 12 insertions(+), 5 deletions(-)
+
+--- jack-audio-connection-kit-0.99.0/jack/shm.h.orig	2004-01-09 02:43:08.000000000 +0100
++++ jack-audio-connection-kit-0.99.0/jack/shm.h	2005-03-24 01:45:38.000000000 +0100
+@@ -56,7 +56,7 @@
+ /* here beginneth the API */
+ 
+ extern int  jack_initialize_shm (void);
+-extern void jack_cleanup_shm (void);
++extern int  jack_cleanup_shm (void);
+ 
+ extern int  jack_shmalloc (const char *shm_name, jack_shmsize_t size, jack_shm_info_t* result);
+ extern void jack_release_shm (jack_shm_info_t*);
+--- jack-audio-connection-kit-0.99.0/libjack/shm.c.orig	2004-04-14 04:06:42.000000000 +0200
++++ jack-audio-connection-kit-0.99.0/libjack/shm.c	2005-03-24 01:46:39.000000000 +0100
+@@ -82,14 +82,16 @@
+ 	}
+ }
+ 
+-void
++int
+ jack_cleanup_shm (void)
+ {
+ 	int i;
+ 	int destroy;
+ 	jack_shm_info_t copy;
+ 
+-	jack_initialize_shm ();
++	if (jack_initialize_shm() != 0)
++		return 0;
++
+ 	jack_shm_lock_registry ();
+ 
+ 	for (i = 0; i < MAX_SHM_ID; i++) {
+@@ -128,6 +130,7 @@
+ 	}
+ 
+ 	jack_shm_unlock_registry ();
++	return 1;
+ }
+ 
+ #ifdef USE_POSIX_SHM
+--- jack-audio-connection-kit-0.99.0/jackd/jackd.c.orig	2004-09-15 05:19:50.000000000 +0200
++++ jack-audio-connection-kit-0.99.0/jackd/jackd.c	2005-03-24 01:48:32.000000000 +0100
+@@ -566,12 +566,16 @@
+ 
+ 	copyright (stdout);
+ 
+-	jack_cleanup_shm ();
++	if (!jack_cleanup_shm())
++		exit(1);
++
+ 	jack_cleanup_files ();
+ 
+ 	jack_main (desc, driver_params);
+ 
+-	jack_cleanup_shm ();
++	if (!jack_cleanup_shm())
++		exit(1);
++
+ 	jack_cleanup_files ();
+ 
+ 	exit (0);
