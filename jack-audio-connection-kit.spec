@@ -16,6 +16,7 @@ Patch0:		%{name}-opt.patch
 URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	doxygen
 BuildRequires:	glib-devel >= 1.0.0
 %{?with_cap:BuildRequires:	libcap-devel}
@@ -105,6 +106,7 @@ wymaga biblioteki libsndfile.
 %patch -p1
 
 %build
+cp -f /usr/share/automake/config.sub .
 %{__autoconf}
 CPPFLAGS="-I/usr/X11R6/include"
 %configure \
