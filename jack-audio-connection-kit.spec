@@ -120,6 +120,8 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT \
 	HTML_DIR=%{_gtkdocdir}
 
+rm -f $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -144,7 +146,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so
 %{_libdir}/libjack.la
-%{_libdir}/jack/jack_*.la
 %{_includedir}/jack
 %{_pkgconfigdir}/jack.pc
 %{_gtkdocdir}/*
@@ -152,7 +153,6 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
-%{_libdir}/jack/jack_*.a
 
 %files example-clients
 %defattr(644,root,root,755)
