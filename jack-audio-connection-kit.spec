@@ -3,6 +3,7 @@
 %bcond_with	cap		# use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	alsa		# don't build ALSA driver
 %bcond_without	static_libs	# don't build static libs
+%bcond_with	posix_shm	# use posix shm
 #
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
@@ -131,7 +132,7 @@ cp -f /usr/share/automake/config.sub config
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	%{?debug:--enable-debug} \
 	--disable-optimize \
-	--enable-posix-shm \
+	%{?with_posix_shm:--enable-posix-shm} \
 	%{?with_static_libs:--enable-static} \
 	--with-html-dir=%{_gtkdocdir}
 
