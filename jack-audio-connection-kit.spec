@@ -1,26 +1,28 @@
 #
 # Conditional build:
-%bcond_with cap			# use capabilities to get real-time priority (needs suid root binary)
-%bcond_without static_libs	# build static libs
+%bcond_with	cap		# use capabilities to get real-time priority (needs suid root binary)
+%bcond_without	alsa		# don't build ALSA driver
+%bcond_without	iec61883	# don't build IEC61883 (FireWire) driver
+%bcond_without	static_libs	# don't build static libs
 #
 Summary:	The Jack Audio Connection Kit
 Summary(pl):	Jack - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.94.0
+Version:	0.98.0
 Release:	1
-License:	GPL/LGPL
+License:	LGPL (libjack), GPL (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	9c3d60f0ca73696ba5c479a3ee7db855
-Patch0:		%{name}-opt.patch
+# Source0-md5:	c1fa5772744542c024e25f90d70caa60
 URL:		http://jackit.sourceforge.net/
-BuildRequires:	alsa-lib-devel >= 0.9.0
+%{?with_alsa:BuildRequires:	alsa-lib-devel >= 0.9.0}
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	doxygen
-BuildRequires:	glib-devel >= 1.0.0
 %{?with_cap:BuildRequires:	libcap-devel}
+%{?with_iec61883:BuildRequires:	libraw1394-devel}
 BuildRequires:	libsndfile-devel >= 1.0.0
+BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -53,8 +55,9 @@ wykonywaniu wszystkich klientów i ma³ych opó¼nieniach dzia³ania.
 %package devel
 Summary:	Header files for Jack
 Summary(pl):	Jack - pliki nag³ówkowe
+License:	LGPL
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files for the Jack Audio Connection Kit.
@@ -65,8 +68,9 @@ Pliki nag³ówkowe dla zestawu do po³±czeñ audio Jack.
 %package static
 Summary:	Static Jack library
 Summary(pl):	Statyczna biblioteka Jack
+License:	LGPL
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static Jack library.
@@ -74,11 +78,38 @@ Static Jack library.
 %description static -l pl
 Statyczna biblioteka Jack.
 
+%package driver-alsa
+Summary:	ALSA driver for Jack
+Summary(pl):	Sterownik ALSA dla Jacka
+License:	GPL
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description driver-alsa
+ALSA driver for Jack.
+
+%description driver-alsa -l pl
+Sterownik ALSA dla Jacka.
+
+%package driver-iec61883
+Summary:	IEC61883 (FireWire audio) driver for Jack
+Summary(pl):	Sterownik IEC61883 (FireWire audio) dla Jacka
+License:	GPL
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description driver-iec61883
+IEC61883 (FireWire audio) driver for Jack.
+
+%description driver-iec61883 -l pl
+Sterownik IEC61883 (FireWire audio) dla Jacka.
+
 %package example-clients
 Summary:	Example clients that use Jack
 Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce Jacka
+License:	GPL
 Group:		Applications/Sound
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description example-clients
 Small example clients that use the Jack Audio Connection Kit.
@@ -90,8 +121,9 @@ po³±czeñ audio Jack.
 %package example-jackrec
 Summary:	Example Jack client: jackrec
 Summary(pl):	Przyk³adowy klient zestawu Jack: jackrec
+License:	GPL
 Group:		Applications/Sound
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description example-jackrec
 Example Jack client: jackrec. It's separated because it uses
@@ -103,7 +135,6 @@ wymaga biblioteki libsndfile.
 
 %prep
 %setup -q
-%patch -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -111,8 +142,10 @@ cp -f /usr/share/automake/config.sub .
 CPPFLAGS="-I/usr/X11R6/include"
 # --enable-optimize is heavy broken, it uses information from /proc/cpuinfo to set compilator flags
 %configure \
+	%{!?with_alsa:--disable-alsa} \
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	%{?debug:--enable-debug} \
+	%{?with_iec61883:--enable-iec61883} \
 	--disable-optimize \
 	%{?with_static_libs:--enable-static} \
 	--with-html-dir=%{_gtkdocdir}
@@ -144,8 +177,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jack_unload
 %attr(755,root,root) %{_libdir}/libjack.so.*.*
 %dir %{_libdir}/jack
-%attr(755,root,root) %{_libdir}/jack/jack_alsa.so
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
+%attr(755,root,root) %{_libdir}/jack/jack_oss.so
 %{_mandir}/man1/*
 
 %files devel
@@ -160,6 +193,18 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
+%endif
+
+%if %{with alsa}
+%files driver-alsa
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/jack/jack_alsa.so
+%endif
+
+%if %{with iec61883}
+%files driver-iec61883
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/jack/jack_iec61883.so
 %endif
 
 %files example-clients
