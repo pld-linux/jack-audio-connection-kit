@@ -137,7 +137,7 @@ wymaga biblioteki libsndfile.
 %setup -q
 
 %build
-cp -f /usr/share/automake/config.sub .
+cp -f /usr/share/automake/config.sub config
 %{__autoconf}
 CPPFLAGS="-I/usr/X11R6/include"
 # --enable-optimize is heavy broken, it uses information from /proc/cpuinfo to set compilator flags
