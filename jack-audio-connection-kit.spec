@@ -148,6 +148,7 @@ CPPFLAGS="-I/usr/X11R6/include"
 	%{?debug:--enable-debug} \
 	%{?with_iec61883:--enable-iec61883} \
 	--disable-optimize \
+	--enable-posix-shm \
 	%{?with_static_libs:--enable-static} \
 	--with-html-dir=%{_gtkdocdir}
 
