@@ -2,30 +2,29 @@
 # Conditional build:
 %bcond_with	cap		# use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	alsa		# don't build ALSA driver
-%bcond_without	iec61883	# don't build IEC61883 (FireWire) driver
 %bcond_without	static_libs	# don't build static libs
 #
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.98.1
-Release:	4
+Version:	0.99.0
+Release:	1
 License:	LGPL (libjack), GPL (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	6ebd659a431e75b841fa5e0c397372ee
-Patch0:		%{name}-link.patch
+# Source0-md5:	a891a699010452258d77e59842ebe4a0
 URL:		http://jackit.sourceforge.net/
 %{?with_alsa:BuildRequires:	alsa-lib-devel >= 0.9.0}
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	doxygen
 %{?with_cap:BuildRequires:	libcap-devel}
-%{?with_iec61883:BuildRequires:	libraw1394-devel >= 0.10}
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
+Obsoletes:	jack-audio-connection-kit-driver-iec61883
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
 
 %description
 JACK is a low-latency audio server, written primarily for the Linux
@@ -92,20 +91,6 @@ ALSA driver for JACK.
 %description driver-alsa -l pl
 Sterownik ALSA dla JACKa.
 
-%package driver-iec61883
-Summary:	IEC61883 (FireWire audio) driver for JACK
-Summary(pl):	Sterownik IEC61883 (FireWire audio) dla JACKa
-License:	GPL
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	libraw1394 >= 0.10
-
-%description driver-iec61883
-IEC61883 (FireWire audio) driver for JACK.
-
-%description driver-iec61883 -l pl
-Sterownik IEC61883 (FireWire audio) dla JACKa.
-
 %package example-clients
 Summary:	Example clients that use JACK
 Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce JACKa
@@ -137,7 +122,6 @@ wymaga biblioteki libsndfile.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.sub config
@@ -147,7 +131,6 @@ cp -f /usr/share/automake/config.sub config
 	%{!?with_alsa:--disable-alsa} \
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	%{?debug:--enable-debug} \
-	%{?with_iec61883:--enable-iec61883} \
 	--disable-optimize \
 	--enable-posix-shm \
 	%{?with_static_libs:--enable-static} \
@@ -202,12 +185,6 @@ rm -rf $RPM_BUILD_ROOT
 %files driver-alsa
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/jack/jack_alsa.so
-%endif
-
-%if %{with iec61883}
-%files driver-iec61883
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/jack/jack_iec61883.so
 %endif
 
 %files example-clients
