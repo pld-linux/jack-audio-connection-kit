@@ -5,7 +5,7 @@
 Summary:	The Jack Audio Connection Kit
 Summary(pl):	Jack - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.61.0
+Version:	0.70.4
 Release:	1
 License:	GPL/LGPL
 Group:		Daemons
@@ -145,6 +145,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libjack.so.*.*
 %dir %{_libdir}/jack
 %{_libdir}/jack/jack_alsa.so
+%{_mandir}/man1/*
 
 %files devel
 %defattr(644,root,root,755)
