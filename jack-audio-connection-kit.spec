@@ -79,7 +79,7 @@ Statyczna biblioteka JACK.
 
 %package driver-alsa
 Summary:	ALSA driver for JACK
-Summary(pl):	Sterownik ALSA dla JACKa
+Summary(pl):	Sterownik ALSA dla JACK-a
 License:	GPL
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
@@ -88,11 +88,11 @@ Requires:	%{name} = %{version}-%{release}
 ALSA driver for JACK.
 
 %description driver-alsa -l pl
-Sterownik ALSA dla JACKa.
+Sterownik ALSA dla JACK-a.
 
 %package example-clients
 Summary:	Example clients that use JACK
-Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce JACKa
+Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce JACK-a
 License:	GPL
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
