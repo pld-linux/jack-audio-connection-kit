@@ -5,7 +5,7 @@
 Summary:	The Jack Audio Connection Kit
 Summary(pl):	Jack - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.34.0
+Version:	0.50.0
 Release:	1
 License:	GPL/LGPL
 Group:		Daemons
@@ -19,9 +19,6 @@ BuildRequires:	glib-devel >= 1.0.0
 %{?_with_cap:BuildRequires:	libcap-devel}
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		_gtkdocdir	%{_defaultdocdir}/gtk-doc/html
-%define		_xbindir	/usr/X11R6/bin
 
 %description
 JACK is a low-latency audio server, written primarily for the Linux
@@ -114,7 +111,7 @@ Przyk³adowy klient zestawu Jack u¿ywaj±cy toolkitu FLTK.
 
 %prep
 %setup -q
-%patch -p1
+#%%patch -p1
 
 %build
 %{__autoconf}
@@ -130,10 +127,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	HTML_DIR=$RPM_BUILD_ROOT%{_gtkdocdir}
-
-install -d $RPM_BUILD_ROOT%{_xbindir}
-mv -f $RPM_BUILD_ROOT{%{_bindir},%{_xbindir}}/jack_fltk_client
+	HTML_DIR=%{_gtkdocdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -167,11 +161,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files example-clients
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/jack_cache_killer
 %attr(755,root,root) %{_bindir}/jack_connect
 %attr(755,root,root) %{_bindir}/jack_disconnect
 %attr(755,root,root) %{_bindir}/jack_impulse_grabber
+%attr(755,root,root) %{_bindir}/jack_lsp
+%attr(755,root,root) %{_bindir}/jack_metro
 %attr(755,root,root) %{_bindir}/jack_monitor_client
+%attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
 
 %files example-jackrec
@@ -180,4 +176,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files example-fltk
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_xbindir}/jack_fltk_client
+%attr(755,root,root) %{_bindir}/jack_fltk_client
