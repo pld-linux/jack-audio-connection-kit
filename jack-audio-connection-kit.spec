@@ -9,11 +9,12 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
 Version:	0.99.0
-Release:	1
+Release:	2
 License:	LGPL (libjack), GPL (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
 # Source0-md5:	a891a699010452258d77e59842ebe4a0
+Patch0:		%{name}-segv.patch
 URL:		http://jackit.sourceforge.net/
 %{?with_alsa:BuildRequires:	alsa-lib-devel >= 0.9.0}
 BuildRequires:	autoconf
@@ -122,6 +123,7 @@ wymaga biblioteki libsndfile.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.sub config
