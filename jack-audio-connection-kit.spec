@@ -10,6 +10,7 @@ Release:	1
 License:	GPL/LGPL
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
+Patch0:		%{name}-opt.patch
 URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
@@ -111,12 +112,15 @@ Przyk³adowy klient zestawu Jack u¿ywaj±cy toolkitu FLTK.
 
 %prep
 %setup -q
+%patch -p1
 
 %build
 %{__autoconf}
 CPPFLAGS="-I/usr/X11R6/include"
 %configure \
 	%{?_with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
+	%{?debug:--enable-debug} \
+	%{!?debug:--enable-optimize} \
 	--with-html-dir=%{_gtkdocdir}
 
 %{__make}
@@ -144,21 +148,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jack_unload
 %attr(755,root,root) %{_libdir}/libjack.so.*.*
 %dir %{_libdir}/jack
-%{_libdir}/jack/jack_alsa.so
+%attr(755,root,root) %{_libdir}/jack/jack_alsa.so
 %{_mandir}/man1/*
 
 %files devel
 %defattr(644,root,root,755)
-%{_includedir}/jack
+%attr(755,root,root) %{_libdir}/libjack.so
 %{_libdir}/libjack.la
-%{_libdir}/libjack.so
+%{_includedir}/jack
 %{_pkgconfigdir}/jack.pc
 %{_gtkdocdir}/*
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
-%{_libdir}/jack/jack_alsa.a
 
 %files example-clients
 %defattr(644,root,root,755)
@@ -170,7 +173,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jack_monitor_client
 %attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
-%{_libdir}/jack/inprocess.so
+%attr(755,root,root) %{_libdir}/jack/inprocess.so
 
 %files example-jackrec
 %defattr(644,root,root,755)
