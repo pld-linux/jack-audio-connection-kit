@@ -1,23 +1,24 @@
 #
 # Conditional build:
-# _with_cap	- use capabilities to get real-time priority (needs suid root binary)
+%bcond_with cap		# use capabilities to get real-time priority (needs suid root binary)
+%bcond_with static	# build static libs
 #
 Summary:	The Jack Audio Connection Kit
 Summary(pl):	Jack - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.80.0
+Version:	0.90.0
 Release:	1
 License:	GPL/LGPL
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	63e64da4ba6407cd7b2cca82d7acd4f4
+# Source0-md5:	88e7e54a517b3c98a04707304a618cd2
 Patch0:		%{name}-opt.patch
 URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf
 BuildRequires:	doxygen
 BuildRequires:	glib-devel >= 1.0.0
-%{?_with_cap:BuildRequires:	libcap-devel}
+%{?with_cap:BuildRequires:	libcap-devel}
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	readline-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -107,9 +108,10 @@ wymaga biblioteki libsndfile.
 %{__autoconf}
 CPPFLAGS="-I/usr/X11R6/include"
 %configure \
-	%{?_with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
+	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	%{?debug:--enable-debug} \
 	%{!?debug:--enable-optimize} \
+	%{?with_static:--enable-static} \
 	--with-html-dir=%{_gtkdocdir}
 
 %{__make}
@@ -151,14 +153,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/jack.pc
 %{_gtkdocdir}/*
 
+%if %{with static}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
+%endif
 
 %files example-clients
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/jack_bufsize
 %attr(755,root,root) %{_bindir}/jack_connect
 %attr(755,root,root) %{_bindir}/jack_disconnect
+%attr(755,root,root) %{_bindir}/jack_freewheel
 %attr(755,root,root) %{_bindir}/jack_impulse_grabber
 %attr(755,root,root) %{_bindir}/jack_lsp
 %attr(755,root,root) %{_bindir}/jack_metro
