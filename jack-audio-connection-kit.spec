@@ -169,7 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jack_monitor_client
 %attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
-%{_libdir}/jack/inpocess.so
+%{_libdir}/jack/inprocess.so
 
 %files example-jackrec
 %defattr(644,root,root,755)
