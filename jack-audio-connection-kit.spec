@@ -5,8 +5,8 @@
 %bcond_without	iec61883	# don't build IEC61883 (FireWire) driver
 %bcond_without	static_libs	# don't build static libs
 #
-Summary:	The Jack Audio Connection Kit
-Summary(pl):	Jack - zestaw do po³±czeñ audio
+Summary:	The JACK Audio Connection Kit
+Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
 Version:	0.98.1
 Release:	3
@@ -53,85 +53,85 @@ Oznacza to, ¿e skupia siê na dwóch rzeczach: synchronicznym
 wykonywaniu wszystkich klientów i ma³ych opó¼nieniach dzia³ania.
 
 %package devel
-Summary:	Header files for Jack
-Summary(pl):	Jack - pliki nag³ówkowe
+Summary:	Header files for JACK
+Summary(pl):	JACK - pliki nag³ówkowe
 License:	LGPL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-Header files for the Jack Audio Connection Kit.
+Header files for the JACK Audio Connection Kit.
 
 %description devel -l pl
-Pliki nag³ówkowe dla zestawu do po³±czeñ audio Jack.
+Pliki nag³ówkowe dla zestawu do po³±czeñ audio JACK.
 
 %package static
-Summary:	Static Jack library
-Summary(pl):	Statyczna biblioteka Jack
+Summary:	Static JACK library
+Summary(pl):	Statyczna biblioteka JACK
 License:	LGPL
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
-Static Jack library.
+Static JACK library.
 
 %description static -l pl
-Statyczna biblioteka Jack.
+Statyczna biblioteka JACK.
 
 %package driver-alsa
-Summary:	ALSA driver for Jack
-Summary(pl):	Sterownik ALSA dla Jacka
+Summary:	ALSA driver for JACK
+Summary(pl):	Sterownik ALSA dla JACKa
 License:	GPL
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description driver-alsa
-ALSA driver for Jack.
+ALSA driver for JACK.
 
 %description driver-alsa -l pl
-Sterownik ALSA dla Jacka.
+Sterownik ALSA dla JACKa.
 
 %package driver-iec61883
-Summary:	IEC61883 (FireWire audio) driver for Jack
-Summary(pl):	Sterownik IEC61883 (FireWire audio) dla Jacka
+Summary:	IEC61883 (FireWire audio) driver for JACK
+Summary(pl):	Sterownik IEC61883 (FireWire audio) dla JACKa
 License:	GPL
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	libraw1394 >= 0.10
 
 %description driver-iec61883
-IEC61883 (FireWire audio) driver for Jack.
+IEC61883 (FireWire audio) driver for JACK.
 
 %description driver-iec61883 -l pl
-Sterownik IEC61883 (FireWire audio) dla Jacka.
+Sterownik IEC61883 (FireWire audio) dla JACKa.
 
 %package example-clients
-Summary:	Example clients that use Jack
-Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce Jacka
+Summary:	Example clients that use JACK
+Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce JACKa
 License:	GPL
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
 
 %description example-clients
-Small example clients that use the Jack Audio Connection Kit.
+Small example clients that use the JACK Audio Connection Kit.
 
 %description example-clients -l pl
 Ma³e, przyk³adowe programy klienckie, które u¿ywaj± zestawu do
-po³±czeñ audio Jack.
+po³±czeñ audio JACK.
 
 %package example-jackrec
-Summary:	Example Jack client: jackrec
-Summary(pl):	Przyk³adowy klient zestawu Jack: jackrec
+Summary:	Example JACK client: jackrec
+Summary(pl):	Przyk³adowy klient zestawu JACK: jackrec
 License:	GPL
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
 
 %description example-jackrec
-Example Jack client: jackrec. It's separated because it uses
+Example JACK client: jackrec. It's separated because it uses
 libsndfile library.
 
 %description example-jackrec
-Przyk³adowy klient zestawu Jack: jackrec. Jest wydzielony, poniewa¿
+Przyk³adowy klient zestawu JACK: jackrec. Jest wydzielony, poniewa¿
 wymaga biblioteki libsndfile.
 
 %prep
