@@ -153,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/jack.pc
 %{_gtkdocdir}/*
 
-%if %{with static}
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
