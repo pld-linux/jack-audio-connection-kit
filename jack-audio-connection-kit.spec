@@ -25,7 +25,6 @@ BuildRequires:	readline-devel
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-
 %description
 JACK is a low-latency audio server, written primarily for the Linux
 operating system. It can connect a number of different applications to
