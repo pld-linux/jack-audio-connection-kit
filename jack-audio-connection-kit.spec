@@ -9,11 +9,12 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
 Version:	0.98.1
-Release:	3
+Release:	4
 License:	LGPL (libjack), GPL (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
 # Source0-md5:	6ebd659a431e75b841fa5e0c397372ee
+Patch0:		%{name}-link.patch
 URL:		http://jackit.sourceforge.net/
 %{?with_alsa:BuildRequires:	alsa-lib-devel >= 0.9.0}
 BuildRequires:	autoconf
@@ -136,11 +137,11 @@ wymaga biblioteki libsndfile.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.sub config
 %{__autoconf}
-CPPFLAGS="-I/usr/X11R6/include"
 # --enable-optimize is heavy broken, it uses information from /proc/cpuinfo to set compilator flags
 %configure \
 	%{!?with_alsa:--disable-alsa} \
