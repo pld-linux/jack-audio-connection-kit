@@ -1,0 +1,3 @@
+- 0.99.0, removed firewire driver (removed from package)
+- removed link patch (already included)
+- performs much better as last version, upgrade recommended ;)
