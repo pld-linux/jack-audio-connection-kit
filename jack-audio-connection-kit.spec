@@ -5,12 +5,12 @@
 Summary:	The Jack Audio Connection Kit
 Summary(pl):	Jack - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.75.0
+Version:	0.80.0
 Release:	1
 License:	GPL/LGPL
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	db0424e9e9ad6849220c1609a3ddc0de
+# Source0-md5:	63e64da4ba6407cd7b2cca82d7acd4f4
 Patch0:		%{name}-opt.patch
 URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
@@ -137,12 +137,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libjack.so.*.*
 %dir %{_libdir}/jack
 %attr(755,root,root) %{_libdir}/jack/jack_alsa.so
+%attr(755,root,root) %{_libdir}/jack/jack_dummy.so
 %{_mandir}/man1/*
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so
 %{_libdir}/libjack.la
+%{_libdir}/jack/jack_*.la
 %{_includedir}/jack
 %{_pkgconfigdir}/jack.pc
 %{_gtkdocdir}/*
@@ -150,6 +152,7 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
+%{_libdir}/jack/jack_*.a
 
 %files example-clients
 %defattr(644,root,root,755)
@@ -163,6 +166,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jack_simple_client
 %attr(755,root,root) %{_bindir}/jack_transport
 %attr(755,root,root) %{_libdir}/jack/inprocess.so
+%attr(755,root,root) %{_libdir}/jack/intime.so
 
 %files example-jackrec
 %defattr(644,root,root,755)
