@@ -156,7 +156,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # note: COPYING only specifies which parts fall under GPL and LGPL
 %doc AUTHORS TODO COPYING
-%{?_with_cap:%attr(4755,root,root) %{_bindir}/jackstart}
+%{?with_cap:%attr(4755,root,root) %{_bindir}/jackstart}
 %attr(755,root,root) %{_bindir}/jackd
 %attr(755,root,root) %{_bindir}/jack_load
 %attr(755,root,root) %{_bindir}/jack_unload
