@@ -17,6 +17,7 @@ BuildRequires:	fltk-devel
 BuildRequires:	glib-devel >= 1.0.0
 %{?_with_cap:BuildRequires:	libcap-devel}
 BuildRequires:	libsndfile-devel >= 1.0.0
+BuildRequires:	doxygen
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
