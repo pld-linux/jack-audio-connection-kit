@@ -1,7 +1,7 @@
 #
 # Conditional build:
-%bcond_with cap		# use capabilities to get real-time priority (needs suid root binary)
-%bcond_with static	# build static libs
+%bcond_with cap			# use capabilities to get real-time priority (needs suid root binary)
+%bcond_without static_libs	# build static libs
 #
 Summary:	The Jack Audio Connection Kit
 Summary(pl):	Jack - zestaw do po³±czeñ audio
@@ -111,7 +111,7 @@ CPPFLAGS="-I/usr/X11R6/include"
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	%{?debug:--enable-debug} \
 	%{!?debug:--enable-optimize} \
-	%{?with_static:--enable-static} \
+	%{?with_static_libs:--enable-static} \
 	--with-html-dir=%{_gtkdocdir}
 
 %{__make}
