@@ -20,7 +20,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	doxygen
 %{?with_cap:BuildRequires:	libcap-devel}
-%{?with_iec61883:BuildRequires:	libraw1394-devel}
+%{?with_iec61883:BuildRequires:	libraw1394-devel >= 0.10}
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
@@ -97,6 +97,7 @@ Summary(pl):	Sterownik IEC61883 (FireWire audio) dla Jacka
 License:	GPL
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libraw1394 >= 0.10
 
 %description driver-iec61883
 IEC61883 (FireWire audio) driver for Jack.
