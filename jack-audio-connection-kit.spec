@@ -6,12 +6,12 @@
 Summary:	The Jack Audio Connection Kit
 Summary(pl):	Jack - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.90.0
+Version:	0.90.1
 Release:	1
 License:	GPL/LGPL
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	88e7e54a517b3c98a04707304a618cd2
+# Source0-md5:	541c633d9fe5f14c800008b5ed0cbacd
 Patch0:		%{name}-opt.patch
 URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
