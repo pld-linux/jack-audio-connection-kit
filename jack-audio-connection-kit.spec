@@ -5,7 +5,7 @@
 Summary:	The Jack Audio Connection Kit
 Summary(pl):	Jack - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.71.1
+Version:	0.71.2
 Release:	1
 License:	GPL/LGPL
 Group:		Daemons
@@ -98,18 +98,6 @@ libsndfile library.
 Przyk³adowy klient zestawu Jack: jackrec. Jest wydzielony, poniewa¿
 wymaga biblioteki libsndfile.
 
-%package example-fltk
-Summary:	Example Jack client that uses FLTK
-Summary(pl):	Przyk³adowy klient zestawu Jack u¿ywaj±cy toolkitu FLTK
-Group:		X11/Applications/Sound
-Requires:	%{name} = %{version}
-
-%description example-fltk
-Example Jack client that uses FLTK.
-
-%description example-fltk -l pl
-Przyk³adowy klient zestawu Jack u¿ywaj±cy toolkitu FLTK.
-
 %prep
 %setup -q
 %patch -p1
@@ -178,7 +166,3 @@ rm -rf $RPM_BUILD_ROOT
 %files example-jackrec
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/jackrec
-
-%files example-fltk
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/jack_fltk_client
