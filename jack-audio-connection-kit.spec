@@ -103,7 +103,7 @@ wymaga biblioteki libsndfile.
 %package example-fltk
 Summary:	Example Jack client that uses FLTK
 Summary(pl):	Przyk³adowy klient zestawu Jack u¿ywaj±cy toolkitu FLTK
-Group:		X11/Applications/Multimedia
+Group:		X11/Applications/Sound
 Requires:	%{name} = %{version}
 
 %description example-fltk
