@@ -37,8 +37,8 @@ execution of all clients, and low latency operation.
 JACK to serwer d¼wiêku o ma³ych opó¼nieniach, napisany g³ównie dla
 systemu operacyjnego Linux. Mo¿e przyj±æ po³±czenia od wielu ró¿nych
 aplikacji do urz±dzenia d¼wiêkowego, a tak¿e pozwoliæ im na dzielenie
-d¼wiêku pomiêdzy siebie. Programy kliencie dzia³aj± jako w³asne
-procesy (tzn. normalne aplikacje), lub mog± dzia³aæ wewn±trz serwera
+d¼wiêku pomiêdzy siebie. Programy klienckie dzia³aj± jako w³asne
+procesy (tzn. normalne aplikacje) lub mog± dzia³aæ wewn±trz serwera
 JACK (jako wtyczki).
 
 JACK ró¿ni siê od innych serwerów d¼wiêku tym, ¿e zosta³
