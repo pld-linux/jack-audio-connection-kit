@@ -9,7 +9,7 @@ Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
 %define		_snap	20050503
 Version:	0.99.61
-Release:	0.%{_snap}.1
+Release:	0.%{_snap}.2
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 #Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
