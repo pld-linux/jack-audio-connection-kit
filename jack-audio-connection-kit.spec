@@ -1,20 +1,21 @@
 #
 # Conditional build:
-%bcond_with	cap		# use capabilities to get real-time priority (needs suid root binary)
+%bcond_without	cap		# use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	alsa		# don't build ALSA driver
-%bcond_without	static_libs	# don't build static libs
-%bcond_with	posix_shm	# use posix shm
+%bcond_without	posix_shm	# use posix shm
 #
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.99.0
-Release:	2
-License:	LGPL (libjack), GPL (the rest)
+%define		_snap	20050503
+Version:	0.99.61
+Release:	0.%{_snap}.1
+License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
-Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	a891a699010452258d77e59842ebe4a0
-Patch0:		%{name}-segv.patch
+#Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
+Source0:	%{name}-%{_snap}.tar.bz2
+# Source0-md5:	e7648418eec0de239944d9c4571b4809
+Patch0:		%{name}-optimized-cflags.patch
 URL:		http://jackit.sourceforge.net/
 %{?with_alsa:BuildRequires:	alsa-lib-devel >= 0.9.0}
 BuildRequires:	autoconf
@@ -122,21 +123,47 @@ Przyk³adowy klient zestawu JACK: jackrec. Jest wydzielony, poniewa¿
 wymaga biblioteki libsndfile.
 
 %prep
-%setup -q
+%setup -q -n %{name}
 %patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.sub config
+%{__libtoolize}
+%{__aclocal} -I config
+%{__autoheader}
+%{__automake}
 %{__autoconf}
-# --enable-optimize is heavy broken, it uses information from /proc/cpuinfo to set compilator flags
+
 %configure \
+	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
+	--disable-oldtrans \
+	--enable-oss \
 	%{!?with_alsa:--disable-alsa} \
+	--disable-portaudio \
+	--disable-coreaudio \
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	%{?debug:--enable-debug} \
-	--disable-optimize \
-	%{?with_posix_shm:--enable-posix-shm} \
-	%{?with_static_libs:--enable-static} \
-	--with-html-dir=%{_gtkdocdir}
+	--enable-optimize \
+%ifarch athlon pentium3 pentium4 amd64
+	--enable-mmx \
+	--enable-sse \
+%else
+	--disable-mmx \
+	--disable-sse \
+%endif
+%ifarch ppc
+	--enable-altivec \
+%else
+	--disable-altivec \
+%endif
+	--enable-shared \
+	--enable-static \
+	--enable-resize \
+	--enable-ensure-mlock \
+	--enable-timestamps \
+	--enable-preemption-check \
+	--with-html-dir=%{_gtkdocdir} \
+	--with-default-tmpdir=/tmp
 
 %{__make}
 
@@ -177,11 +204,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/jack.pc
 %{_gtkdocdir}/*
 
-%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
-%endif
 
 %if %{with alsa}
 %files driver-alsa
