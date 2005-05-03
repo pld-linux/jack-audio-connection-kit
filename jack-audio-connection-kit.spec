@@ -146,11 +146,12 @@ cp -f /usr/share/automake/config.sub config
 	--enable-optimize \
 %ifarch athlon pentium3 pentium4 amd64
 	--enable-mmx \
-%ifarch pentium3 pentium4 amd64
-	--enable-sse \
-%endif
 %else
 	--disable-mmx \
+%endif
+%ifarch pentium3 pentium4 amd64
+	--enable-sse \
+%else
 	--disable-sse \
 %endif
 %ifarch ppc
