@@ -1,8 +1,8 @@
 #
 # Conditional build:
-%bcond_without	cap		# use capabilities to get real-time priority (needs suid root binary)
+%bcond_without	cap		# don't use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	alsa		# don't build ALSA driver
-%bcond_without	posix_shm	# use posix shm
+%bcond_without	posix_shm	# don't use posix shm
 #
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
