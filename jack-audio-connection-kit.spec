@@ -7,14 +7,12 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-%define		_snap	20050503
-Version:	0.99.61
-Release:	0.%{_snap}.2
+Version:	0.100.0
+Release:	0.1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
-#Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-Source0:	%{name}-%{_snap}.tar.bz2
-# Source0-md5:	e7648418eec0de239944d9c4571b4809
+Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
+# Source0-md5:	dc28b3e8a663c090227e83be6fc1f2d4
 Patch0:		%{name}-optimized-cflags.patch
 URL:		http://jackit.sourceforge.net/
 %{?with_alsa:BuildRequires:	alsa-lib-devel >= 0.9.0}
@@ -23,6 +21,7 @@ BuildRequires:	automake
 BuildRequires:	doxygen
 %{?with_cap:BuildRequires:	libcap-devel}
 BuildRequires:	libsndfile-devel >= 1.0.0
+BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
@@ -123,7 +122,7 @@ Przyk³adowy klient zestawu JACK: jackrec. Jest wydzielony, poniewa¿
 wymaga biblioteki libsndfile.
 
 %prep
-%setup -q -n %{name}
+%setup -q
 %patch0 -p1
 
 %build
