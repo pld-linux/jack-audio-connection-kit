@@ -3,6 +3,7 @@
 %bcond_without	cap		# don't use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	alsa		# don't build ALSA driver
 %bcond_without	posix_shm	# don't use posix shm
+%bcond_without	static_libs	# don't build static libs
 #
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
@@ -134,15 +135,16 @@ cp -f /usr/share/automake/config.sub config
 %{__autoconf}
 
 %configure \
-	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
+	%{?debug:--enable-debug} \
+	--disable-coreaudio \
 	--disable-oldtrans \
+	--disable-portaudio \
+	--enable-optimize \
 	--enable-oss \
 	%{!?with_alsa:--disable-alsa} \
-	--disable-portaudio \
-	--disable-coreaudio \
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
-	%{?debug:--enable-debug} \
-	--enable-optimize \
+	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
+	{?with_static_libs:--enable-static} \
 %ifarch athlon pentium3 pentium4 amd64
 	--enable-mmx \
 %else
@@ -206,9 +208,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/jack.pc
 %{_gtkdocdir}/*
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
+%endif
 
 %if %{with alsa}
 %files driver-alsa
