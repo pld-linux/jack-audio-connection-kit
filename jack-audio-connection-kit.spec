@@ -144,7 +144,7 @@ cp -f /usr/share/automake/config.sub config
 	%{!?with_alsa:--disable-alsa} \
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
-	{?with_static_libs:--enable-static} \
+	%{?with_static_libs:--enable-static} \
 %ifarch athlon pentium3 pentium4 amd64
 	--enable-mmx \
 %else
