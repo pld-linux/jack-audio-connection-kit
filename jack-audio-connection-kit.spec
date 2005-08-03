@@ -9,7 +9,7 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
 Version:	0.100.0
-Release:	0.1
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
@@ -26,6 +26,7 @@ BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
+Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -59,7 +60,7 @@ Summary:	Header files for JACK
 Summary(pl):	JACK - pliki nag³ówkowe
 License:	LGPL
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 Header files for the JACK Audio Connection Kit.
@@ -79,6 +80,18 @@ Static JACK library.
 
 %description static -l pl
 Statyczna biblioteka JACK.
+
+%package libs
+Summary:	JACK libraries
+Summary(pl):	Biblioteki JACK-a
+License:	GPL
+Group:		Libraries
+
+%description libs
+Shared JACK libraries.
+
+%description libs -l pl
+Biblioteki wspó³dzielone JACK-a.
 
 %package driver-alsa
 Summary:	ALSA driver for JACK
@@ -183,8 +196,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
+%post	libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -194,7 +207,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jackd
 %attr(755,root,root) %{_bindir}/jack_load
 %attr(755,root,root) %{_bindir}/jack_unload
-%attr(755,root,root) %{_libdir}/libjack.so.*.*
 %dir %{_libdir}/jack
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
 %attr(755,root,root) %{_libdir}/jack/jack_oss.so
@@ -213,6 +225,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
 %endif
+
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libjack.so.*.*
 
 %if %{with alsa}
 %files driver-alsa
