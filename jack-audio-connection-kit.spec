@@ -82,16 +82,16 @@ Static JACK library.
 Statyczna biblioteka JACK.
 
 %package libs
-Summary:	JACK libraries
-Summary(pl):	Biblioteki JACK-a
+Summary:	JACK library
+Summary(pl):	Biblioteka JACK-a
 License:	GPL
 Group:		Libraries
 
 %description libs
-Shared JACK libraries.
+Shared JACK library.
 
 %description libs -l pl
-Biblioteki wspó³dzielone JACK-a.
+Biblioteka wspó³dzielona JACK-a.
 
 %package driver-alsa
 Summary:	ALSA driver for JACK
