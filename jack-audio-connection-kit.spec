@@ -158,12 +158,12 @@ cp -f /usr/share/automake/config.sub config
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
 	%{?with_static_libs:--enable-static} \
-%ifarch athlon pentium3 pentium4 amd64
+%ifarch athlon pentium3 pentium4 %{x8664}
 	--enable-mmx \
 %else
 	--disable-mmx \
 %endif
-%ifarch pentium3 pentium4 amd64
+%ifarch pentium3 pentium4 %{x8664}
 	--enable-sse \
 %else
 	--disable-sse \
