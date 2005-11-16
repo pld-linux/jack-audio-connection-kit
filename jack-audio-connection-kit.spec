@@ -25,6 +25,7 @@ BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
+BuildRequires:	rpmbuild(macros) >= 1.98
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
