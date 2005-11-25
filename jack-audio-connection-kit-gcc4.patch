@@ -1,0 +1,22 @@
+--- jack-audio-connection-kit-0.100.0/drivers/alsa/alsa_driver.c.orig	2005-11-25 12:30:41.000000000 +0000
++++ jack-audio-connection-kit-0.100.0/drivers/alsa/alsa_driver.c	2005-11-25 12:31:12.743735832 +0000
+@@ -1667,7 +1667,7 @@
+ 	return 0;
+ }
+ 
+-static inline int
++static int
+ alsa_driver_run_cycle (alsa_driver_t *driver)
+ {
+ 	jack_engine_t *engine = driver->engine;
+--- jack-audio-connection-kit-0.100.0/drivers/dummy/dummy_driver.c.orig	2004-10-15 04:49:18.000000000 +0000
++++ jack-audio-connection-kit-0.100.0/drivers/dummy/dummy_driver.c	2005-11-25 12:31:33.311609040 +0000
+@@ -62,7 +62,7 @@
+ 	return driver->period_size;
+ }
+ 
+-static inline int
++static int
+ dummy_driver_run_cycle (dummy_driver_t *driver)
+ {
+ 	jack_engine_t *engine = driver->engine;
