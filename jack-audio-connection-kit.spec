@@ -88,7 +88,7 @@ Summary:	JACK library
 Summary(pl):	Biblioteka JACK-a
 License:	GPL
 Group:		Libraries
-Conflicts:	%{name} < 0.100.7
+Conflicts:	jack-audio-connection-kit < 0.100.7
 
 %description libs
 Shared JACK library.
