@@ -8,12 +8,12 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.100.7
-Release:	3
+Version:	0.101.1
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	7a53b0af6a4005810e331bb3b0d84880
+# Source0-md5:	bb25f7c1da5d488b70edcf39ff5a39b2
 Patch0:		%{name}-optimized-cflags.patch
 Patch1:		%{name}-gcc4.patch
 URL:		http://jackit.sourceforge.net/
