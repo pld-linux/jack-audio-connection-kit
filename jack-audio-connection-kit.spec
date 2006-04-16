@@ -18,7 +18,7 @@ Patch0:		%{name}-optimized-cflags.patch
 Patch1:		%{name}-gcc4.patch
 URL:		http://jackit.sourceforge.net/
 %{?with_alsa:BuildRequires:	alsa-lib-devel >= 0.9.0}
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	doxygen
 %{?with_cap:BuildRequires:	libcap-devel}
@@ -30,6 +30,11 @@ BuildRequires:	rpmbuild(macros) >= 1.98
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		specflags_ia32		-fomit-frame-pointer -ffast-math
+%define		specflags_pentium3	-mfpmath=sse
+%define		specflags_pentium4	-mfpmath=sse
+%define		specflags_x86_64	-fomit-frame-pointer -ffast-math -mfpmath=sse
 
 %description
 JACK is a low-latency audio server, written primarily for the Linux
@@ -57,6 +62,19 @@ zaprojektowany od pocz±tku z my¶l± o profesjonalnej obróbce d¼wiêku.
 Oznacza to, ¿e skupia siê na dwóch rzeczach: synchronicznym
 wykonywaniu wszystkich klientów i ma³ych opó¼nieniach dzia³ania.
 
+%package libs
+Summary:	JACK library
+Summary(pl):	Biblioteka JACK-a
+License:	LGPL
+Group:		Libraries
+Conflicts:	jack-audio-connection-kit < 0.100.7
+
+%description libs
+Shared JACK library.
+
+%description libs -l pl
+Biblioteka wspó³dzielona JACK-a.
+
 %package devel
 Summary:	Header files for JACK
 Summary(pl):	JACK - pliki nag³ówkowe
@@ -82,19 +100,6 @@ Static JACK library.
 
 %description static -l pl
 Statyczna biblioteka JACK.
-
-%package libs
-Summary:	JACK library
-Summary(pl):	Biblioteka JACK-a
-License:	GPL
-Group:		Libraries
-Conflicts:	jack-audio-connection-kit < 0.100.7
-
-%description libs
-Shared JACK library.
-
-%description libs -l pl
-Biblioteka wspó³dzielona JACK-a.
 
 %package driver-alsa
 Summary:	ALSA driver for JACK
@@ -144,7 +149,6 @@ wymaga biblioteki libsndfile.
 %patch1 -p1
 
 %build
-cp -f /usr/share/automake/config.sub config
 %{__libtoolize}
 %{__aclocal} -I config
 %{__autoheader}
@@ -156,7 +160,6 @@ cp -f /usr/share/automake/config.sub config
 	--disable-coreaudio \
 	--disable-oldtrans \
 	--disable-portaudio \
-	--enable-optimize \
 	--enable-oss \
 	%{!?with_alsa:--disable-alsa} \
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
@@ -177,14 +180,12 @@ cp -f /usr/share/automake/config.sub config
 %else
 	--disable-altivec \
 %endif
-	--enable-shared \
-	--enable-static \
-	--enable-resize \
 	--enable-ensure-mlock \
-	--enable-timestamps \
 	--enable-preemption-check \
-	--with-html-dir=%{_gtkdocdir} \
-	--with-default-tmpdir=/tmp
+	--enable-resize \
+	--enable-timestamps \
+	--with-default-tmpdir=/tmp \
+	--with-html-dir=%{_gtkdocdir}
 
 %{__make}
 
@@ -216,6 +217,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/jack/jack_oss.so
 %{_mandir}/man1/*
 
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libjack.so.*.*.*
+
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so
@@ -229,10 +234,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
 %endif
-
-%files libs
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libjack.so.*.*
 
 %if %{with alsa}
 %files driver-alsa
