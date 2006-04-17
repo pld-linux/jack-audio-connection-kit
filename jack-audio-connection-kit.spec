@@ -34,7 +34,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		specflags_ia32		-fomit-frame-pointer -ffast-math
 %define		specflags_pentium3	-mfpmath=sse
 %define		specflags_pentium4	-mfpmath=sse
-%define		specflags_x86_64	-fomit-frame-pointer -ffast-math -mfpmath=sse
+%define		specflags_x86_64	-ffast-math
 
 %description
 JACK is a low-latency audio server, written primarily for the Linux
