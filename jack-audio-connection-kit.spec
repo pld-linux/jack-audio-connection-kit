@@ -1,7 +1,6 @@
 #
 # Conditional build:
 %bcond_without	cap		# don't use capabilities to get real-time priority (needs suid root binary)
-%bcond_without	alsa		# don't build ALSA driver
 %bcond_without	posix_shm	# don't use posix shm
 %bcond_without	static_libs	# don't build static libs
 #
@@ -9,7 +8,7 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
 Version:	0.101.1
-Release:	1
+Release:	2
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
@@ -17,7 +16,7 @@ Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
 Patch0:		%{name}-optimized-cflags.patch
 Patch1:		%{name}-gcc4.patch
 URL:		http://jackit.sourceforge.net/
-%{?with_alsa:BuildRequires:	alsa-lib-devel >= 0.9.0}
+BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	doxygen
@@ -27,6 +26,7 @@ BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
+Obsoletes:	jack-audio-connection-kit-driver-alsa
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -101,19 +101,6 @@ Static JACK library.
 %description static -l pl
 Statyczna biblioteka JACK.
 
-%package driver-alsa
-Summary:	ALSA driver for JACK
-Summary(pl):	Sterownik ALSA dla JACK-a
-License:	GPL
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description driver-alsa
-ALSA driver for JACK.
-
-%description driver-alsa -l pl
-Sterownik ALSA dla JACK-a.
-
 %package example-clients
 Summary:	Example clients that use JACK
 Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce JACK-a
@@ -161,7 +148,6 @@ wymaga biblioteki libsndfile.
 	--disable-oldtrans \
 	--disable-portaudio \
 	--enable-oss \
-	%{!?with_alsa:--disable-alsa} \
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
 	%{?with_static_libs:--enable-static} \
@@ -213,6 +199,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/jack_load
 %attr(755,root,root) %{_bindir}/jack_unload
 %dir %{_libdir}/jack
+%attr(755,root,root) %{_libdir}/jack/jack_alsa.so
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
 %attr(755,root,root) %{_libdir}/jack/jack_oss.so
 %{_mandir}/man1/*
@@ -233,12 +220,6 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
-%endif
-
-%if %{with alsa}
-%files driver-alsa
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/jack/jack_alsa.so
 %endif
 
 %files example-clients
