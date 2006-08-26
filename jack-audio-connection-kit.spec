@@ -190,6 +190,13 @@ rm -rf $RPM_BUILD_ROOT
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
+%if %{with posix_shm}
+%verifyscript libs
+if ! grep -q -s '^[^ ]* /dev/shm tmpfs ' /proc/mounts ; then
+	echo "/dev/shm is not mounted, but JACK compiled with POSIX_SHM requires it"
+fi
+%endif
+
 %files
 %defattr(644,root,root,755)
 # note: COPYING only specifies which parts fall under GPL and LGPL
