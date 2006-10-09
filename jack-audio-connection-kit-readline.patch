@@ -1,0 +1,27 @@
+--- jack-audio-connection-kit-0.102.20/configure.ac.orig	2006-10-09 23:25:24.909599000 +0200
++++ jack-audio-connection-kit-0.102.20/configure.ac	2006-10-10 00:38:03.329983250 +0200
+@@ -642,15 +642,15 @@
+ # the cached result to work around this problem.
+ 
+ READLINE_DEPS=""
+-HAVE_READLINE="false"
+-#AC_CHECK_LIB(readline, readline, [:],
+-#    [unset ac_cv_lib_readline_readline
+-#     AC_CHECK_LIB(readline, readline, [READLINE_DEPS="-ltermcap"],
+-#        [unset ac_cv_lib_readline_readline
+-#	 AC_CHECK_LIB(readline, readline,
+-#	    [READLINE_DEPS="-lncurses"], [HAVE_READLINE=false], "-lncurses")],
+-#	"-ltermcap")])
+-#AC_CHECK_HEADER(readline/chardefs.h, [], [HAVE_READLINE=false])
++HAVE_READLINE="true"
++AC_CHECK_LIB(readline, readline, [:],
++    [unset ac_cv_lib_readline_readline
++     AC_CHECK_LIB(readline, readline, [READLINE_DEPS="-ltinfo"],
++        [unset ac_cv_lib_readline_readline
++	 AC_CHECK_LIB(readline, readline,
++	    [READLINE_DEPS="-lncurses"], [HAVE_READLINE=false], "-lncurses")],
++	"-ltinfo")])
++AC_CHECK_HEADER(readline/chardefs.h, [], [HAVE_READLINE=false])
+ if test x$HAVE_READLINE = xfalse; then
+ 	AC_MSG_WARN([*** the jack_transport example client will not be built])
+ fi
