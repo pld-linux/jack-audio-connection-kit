@@ -7,20 +7,22 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
 Name:		jack-audio-connection-kit
-Version:	0.101.1
-Release:	2
+Version:	0.102.20
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	bb25f7c1da5d488b70edcf39ff5a39b2
+# Source0-md5:	d6881555a8b4c923b4ec706832f0d776
 Patch0:		%{name}-optimized-cflags.patch
 Patch1:		%{name}-gcc4.patch
+Patch2:		%{name}-readline.patch
 URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	doxygen
 %{?with_cap:BuildRequires:	libcap-devel}
+BuildRequires:	libfreebob-devel >= 1.0.0
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
@@ -101,6 +103,19 @@ Static JACK library.
 %description static -l pl
 Statyczna biblioteka JACK.
 
+%package driver-freebob
+Summary:	FreeBoB sound driver for JACK
+Summary(pl):	Sterownik d¼wiêku FreeBoB dla JACK-a
+License:	GPL
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description driver-freebob
+FreeBoB (BeBoB platform) sound driver for JACK.
+
+%description driver-freebob -l pl
+Sterownik d¼wiêku FreeBoB (do platformy BeBoB) dla JACK-a.
+
 %package example-clients
 Summary:	Example clients that use JACK
 Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce JACK-a
@@ -134,6 +149,7 @@ wymaga biblioteki libsndfile.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -229,6 +245,10 @@ fi
 %{_libdir}/libjack.a
 %endif
 
+%files driver-freebob
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/jack/jack_freebob.so
+
 %files example-clients
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/jack_bufsize
@@ -238,6 +258,8 @@ fi
 %attr(755,root,root) %{_bindir}/jack_impulse_grabber
 %attr(755,root,root) %{_bindir}/jack_lsp
 %attr(755,root,root) %{_bindir}/jack_metro
+%attr(755,root,root) %{_bindir}/jack_midiseq
+%attr(755,root,root) %{_bindir}/jack_midisine
 %attr(755,root,root) %{_bindir}/jack_monitor_client
 %attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
