@@ -3,6 +3,7 @@
 %bcond_without	cap		# don't use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	posix_shm	# don't use posix shm
 %bcond_without	static_libs	# don't build static libs
+%bcond_without freebob         # don't build freebob driver
 #
 Summary:	The JACK Audio Connection Kit
 Summary(pl):	JACK - zestaw do po³±czeñ audio
@@ -22,7 +23,7 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	doxygen
 %{?with_cap:BuildRequires:	libcap-devel}
-BuildRequires:	libfreebob-devel >= 1.0.0
+%{?with_freebob:BuildRequires: libfreebob-devel >= 1.0.0}
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
@@ -188,6 +189,8 @@ wymaga biblioteki libsndfile.
 	--enable-timestamps \
 	--with-default-tmpdir=/tmp \
 	--with-html-dir=%{_gtkdocdir}
+#      doesn't work (disables ALSA and sndfile too), because of some autoconf/pkgconfig weirdness
+#      %{!?with_freebob:--disable-freebob}
 
 %{__make}
 
@@ -245,9 +248,11 @@ fi
 %{_libdir}/libjack.a
 %endif
 
+%if %{with freebob}
 %files driver-freebob
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/jack/jack_freebob.so
+%endif
 
 %files example-clients
 %defattr(644,root,root,755)
