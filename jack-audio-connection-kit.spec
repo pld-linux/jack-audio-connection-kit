@@ -142,7 +142,7 @@ Requires:	%{name} = %{version}-%{release}
 Example JACK client: jackrec. It's separated because it uses
 libsndfile library.
 
-%description example-jackrec
+%description example-jackrec -l pl
 Przyk³adowy klient zestawu JACK: jackrec. Jest wydzielony, poniewa¿
 wymaga biblioteki libsndfile.
 
