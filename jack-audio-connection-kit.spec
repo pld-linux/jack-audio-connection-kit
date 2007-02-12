@@ -5,7 +5,7 @@
 %bcond_without	posix_shm	# don't use posix shm
 #
 Summary:	The JACK Audio Connection Kit
-Summary(pl):	JACK - zestaw do po³±czeñ audio
+Summary(pl.UTF-8):   JACK - zestaw do poÅ‚Ä…czeÅ„ audio
 Name:		jack-audio-connection-kit
 Version:	0.100.0
 Release:	0.1
@@ -40,22 +40,22 @@ designed from the ground up to be suitable for professional audio
 work. This means that it focuses on two key areas: synchronous
 execution of all clients, and low latency operation.
 
-%description -l pl
-JACK to serwer d¼wiêku o ma³ych opó¼nieniach, napisany g³ównie dla
-systemu operacyjnego Linux. Mo¿e przyj±æ po³±czenia od wielu ró¿nych
-aplikacji do urz±dzenia d¼wiêkowego, a tak¿e pozwoliæ im na dzielenie
-d¼wiêku pomiêdzy siebie. Programy klienckie dzia³aj± jako w³asne
-procesy (tzn. normalne aplikacje) lub mog± dzia³aæ wewn±trz serwera
+%description -l pl.UTF-8
+JACK to serwer dÅºwiÄ™ku o maÅ‚ych opÃ³Åºnieniach, napisany gÅ‚Ã³wnie dla
+systemu operacyjnego Linux. MoÅ¼e przyjÄ…Ä‡ poÅ‚Ä…czenia od wielu rÃ³Å¼nych
+aplikacji do urzÄ…dzenia dÅºwiÄ™kowego, a takÅ¼e pozwoliÄ‡ im na dzielenie
+dÅºwiÄ™ku pomiÄ™dzy siebie. Programy klienckie dziaÅ‚ajÄ… jako wÅ‚asne
+procesy (tzn. normalne aplikacje) lub mogÄ… dziaÅ‚aÄ‡ wewnÄ…trz serwera
 JACK (jako wtyczki).
 
-JACK ró¿ni siê od innych serwerów d¼wiêku tym, ¿e zosta³
-zaprojektowany od pocz±tku z my¶l± o profesjonalnej obróbce d¼wiêku.
-Oznacza to, ¿e skupia siê na dwóch rzeczach: synchronicznym
-wykonywaniu wszystkich klientów i ma³ych opó¼nieniach dzia³ania.
+JACK rÃ³Å¼ni siÄ™ od innych serwerÃ³w dÅºwiÄ™ku tym, Å¼e zostaÅ‚
+zaprojektowany od poczÄ…tku z myÅ›lÄ… o profesjonalnej obrÃ³bce dÅºwiÄ™ku.
+Oznacza to, Å¼e skupia siÄ™ na dwÃ³ch rzeczach: synchronicznym
+wykonywaniu wszystkich klientÃ³w i maÅ‚ych opÃ³Åºnieniach dziaÅ‚ania.
 
 %package devel
 Summary:	Header files for JACK
-Summary(pl):	JACK - pliki nag³ówkowe
+Summary(pl.UTF-8):   JACK - pliki nagÅ‚Ã³wkowe
 License:	LGPL
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
@@ -63,12 +63,12 @@ Requires:	%{name} = %{version}-%{release}
 %description devel
 Header files for the JACK Audio Connection Kit.
 
-%description devel -l pl
-Pliki nag³ówkowe dla zestawu do po³±czeñ audio JACK.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe dla zestawu do poÅ‚Ä…czeÅ„ audio JACK.
 
 %package static
 Summary:	Static JACK library
-Summary(pl):	Statyczna biblioteka JACK
+Summary(pl.UTF-8):   Statyczna biblioteka JACK
 License:	LGPL
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
@@ -76,12 +76,12 @@ Requires:	%{name}-devel = %{version}-%{release}
 %description static
 Static JACK library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka JACK.
 
 %package driver-alsa
 Summary:	ALSA driver for JACK
-Summary(pl):	Sterownik ALSA dla JACK-a
+Summary(pl.UTF-8):   Sterownik ALSA dla JACK-a
 License:	GPL
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
@@ -89,12 +89,12 @@ Requires:	%{name} = %{version}-%{release}
 %description driver-alsa
 ALSA driver for JACK.
 
-%description driver-alsa -l pl
+%description driver-alsa -l pl.UTF-8
 Sterownik ALSA dla JACK-a.
 
 %package example-clients
 Summary:	Example clients that use JACK
-Summary(pl):	Przyk³adowe programy kliencie u¿ywaj±ce JACK-a
+Summary(pl.UTF-8):   PrzykÅ‚adowe programy kliencie uÅ¼ywajÄ…ce JACK-a
 License:	GPL
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
@@ -102,13 +102,13 @@ Requires:	%{name} = %{version}-%{release}
 %description example-clients
 Small example clients that use the JACK Audio Connection Kit.
 
-%description example-clients -l pl
-Ma³e, przyk³adowe programy klienckie, które u¿ywaj± zestawu do
-po³±czeñ audio JACK.
+%description example-clients -l pl.UTF-8
+MaÅ‚e, przykÅ‚adowe programy klienckie, ktÃ³re uÅ¼ywajÄ… zestawu do
+poÅ‚Ä…czeÅ„ audio JACK.
 
 %package example-jackrec
 Summary:	Example JACK client: jackrec
-Summary(pl):	Przyk³adowy klient zestawu JACK: jackrec
+Summary(pl.UTF-8):   PrzykÅ‚adowy klient zestawu JACK: jackrec
 License:	GPL
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
@@ -117,8 +117,8 @@ Requires:	%{name} = %{version}-%{release}
 Example JACK client: jackrec. It's separated because it uses
 libsndfile library.
 
-%description example-jackrec
-Przyk³adowy klient zestawu JACK: jackrec. Jest wydzielony, poniewa¿
+%description example-jackrec -l pl.UTF-8
+PrzykÅ‚adowy klient zestawu JACK: jackrec. Jest wydzielony, poniewaÅ¼
 wymaga biblioteki libsndfile.
 
 %prep
