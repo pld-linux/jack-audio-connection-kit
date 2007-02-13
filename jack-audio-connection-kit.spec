@@ -6,7 +6,7 @@
 %bcond_without freebob         # don't build freebob driver
 #
 Summary:	The JACK Audio Connection Kit
-Summary(pl.UTF-8):   JACK - zestaw do połączeń audio
+Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
 Version:	0.102.20
 Release:	2
@@ -67,7 +67,7 @@ wykonywaniu wszystkich klientów i małych opóźnieniach działania.
 
 %package libs
 Summary:	JACK library
-Summary(pl.UTF-8):   Biblioteka JACK-a
+Summary(pl.UTF-8):	Biblioteka JACK-a
 License:	LGPL
 Group:		Libraries
 Conflicts:	jack-audio-connection-kit < 0.100.7
@@ -80,7 +80,7 @@ Biblioteka współdzielona JACK-a.
 
 %package devel
 Summary:	Header files for JACK
-Summary(pl.UTF-8):   JACK - pliki nagłówkowe
+Summary(pl.UTF-8):	JACK - pliki nagłówkowe
 License:	LGPL
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
@@ -93,7 +93,7 @@ Pliki nagłówkowe dla zestawu do połączeń audio JACK.
 
 %package static
 Summary:	Static JACK library
-Summary(pl.UTF-8):   Statyczna biblioteka JACK
+Summary(pl.UTF-8):	Statyczna biblioteka JACK
 License:	LGPL
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
@@ -106,7 +106,7 @@ Statyczna biblioteka JACK.
 
 %package driver-freebob
 Summary:	FreeBoB sound driver for JACK
-Summary(pl.UTF-8):   Sterownik dźwięku FreeBoB dla JACK-a
+Summary(pl.UTF-8):	Sterownik dźwięku FreeBoB dla JACK-a
 License:	GPL
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
@@ -119,7 +119,7 @@ Sterownik dźwięku FreeBoB (do platformy BeBoB) dla JACK-a.
 
 %package example-clients
 Summary:	Example clients that use JACK
-Summary(pl.UTF-8):   Przykładowe programy kliencie używające JACK-a
+Summary(pl.UTF-8):	Przykładowe programy kliencie używające JACK-a
 License:	GPL
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
@@ -133,7 +133,7 @@ połączeń audio JACK.
 
 %package example-jackrec
 Summary:	Example JACK client: jackrec
-Summary(pl.UTF-8):   Przykładowy klient zestawu JACK: jackrec
+Summary(pl.UTF-8):	Przykładowy klient zestawu JACK: jackrec
 License:	GPL
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
