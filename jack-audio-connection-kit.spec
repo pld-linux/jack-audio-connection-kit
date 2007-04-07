@@ -3,17 +3,17 @@
 %bcond_without	cap		# don't use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	posix_shm	# don't use posix shm
 %bcond_without	static_libs	# don't build static libs
-%bcond_without freebob         # don't build freebob driver
+%bcond_without	freebob		# don't build freebob driver
 #
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	0.102.20
-Release:	2
+Version:	0.103.0
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	d6881555a8b4c923b4ec706832f0d776
+# Source0-md5:	03a0f63b997ce7b83a1eeaa6b80f4388
 Patch0:		%{name}-optimized-cflags.patch
 Patch1:		%{name}-gcc4.patch
 Patch2:		%{name}-readline.patch
@@ -162,6 +162,7 @@ wymaga biblioteki libsndfile.
 %configure \
 	%{?debug:--enable-debug} \
 	--disable-coreaudio \
+	%{!?with_freebob:--disable-freebob} \
 	--disable-oldtrans \
 	--disable-portaudio \
 	--enable-oss \
@@ -189,8 +190,6 @@ wymaga biblioteki libsndfile.
 	--enable-timestamps \
 	--with-default-tmpdir=/tmp \
 	--with-html-dir=%{_gtkdocdir}
-#      doesn't work (disables ALSA and sndfile too), because of some autoconf/pkgconfig weirdness
-#      %{!?with_freebob:--disable-freebob}
 
 %{__make}
 
