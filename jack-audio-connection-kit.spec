@@ -1,5 +1,6 @@
 #
 # Conditional build:
+%bcond_without	apidocs		# don't generate documentation with doxygen
 %bcond_without	cap		# don't use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	posix_shm	# don't use posix shm
 %bcond_without	static_libs	# don't build static libs
@@ -9,7 +10,7 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
 Version:	0.103.0
-Release:	1
+Release:	2
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
@@ -21,7 +22,7 @@ URL:		http://jackit.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-BuildRequires:	doxygen
+%{?with_apidocs:BuildRequires:	doxygen}
 %{?with_cap:BuildRequires:	libcap-devel}
 %{?with_freebob:BuildRequires: libfreebob-devel >= 1.0.0}
 BuildRequires:	libsndfile-devel >= 1.0.0
@@ -103,6 +104,18 @@ Static JACK library.
 
 %description static -l pl.UTF-8
 Statyczna biblioteka JACK.
+
+%package apidocs
+Summary:	JACK Audio Connection Kit API documentation
+Summary(pl.UTF-8):	Dokumentacja API JACK Audio Connection Kit
+Group:		Documentation
+Requires:	gtk-doc-common
+
+%description apidocs
+JACK Audio Connection Kit API documentation.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API JACK Audio Connection Kit.
 
 %package driver-freebob
 Summary:	FreeBoB sound driver for JACK
@@ -189,7 +202,7 @@ wymaga biblioteki libsndfile.
 	--enable-resize \
 	--enable-timestamps \
 	--with-default-tmpdir=/tmp \
-	--with-html-dir=%{_gtkdocdir}
+	--with-html-dir=%{_gtkdocdir}/%{name}
 
 %{__make}
 
@@ -198,7 +211,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	HTML_DIR=%{_gtkdocdir}
+	HTML_DIR=%{_gtkdocdir}/%{name}
+
+%{?!with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
 
@@ -239,12 +254,17 @@ fi
 %{_libdir}/libjack.la
 %{_includedir}/jack
 %{_pkgconfigdir}/jack.pc
-%{_gtkdocdir}/*
 
 %if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
+%endif
+
+%if %{with apidocs}
+%files apidocs
+%defattr(644,root,root,755)
+%{_gtkdocdir}/%{name}
 %endif
 
 %if %{with freebob}
