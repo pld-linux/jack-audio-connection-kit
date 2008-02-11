@@ -9,12 +9,12 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	0.103.0
-Release:	5
+Version:	0.109.2
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	03a0f63b997ce7b83a1eeaa6b80f4388
+# Source0-md5:	4d8f795a6c566b9753a86038367e7e32
 Patch0:		%{name}-optimized-cflags.patch
 Patch1:		%{name}-gcc4.patch
 Patch2:		%{name}-readline.patch
@@ -24,7 +24,7 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 %{?with_apidocs:BuildRequires:	doxygen}
 %{?with_cap:BuildRequires:	libcap-devel}
-%{?with_freebob:BuildRequires: libfreebob-devel >= 1.0.0}
+%{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
@@ -236,6 +236,8 @@ fi
 %doc AUTHORS TODO COPYING
 %{?with_cap:%attr(4755,root,root) %{_bindir}/jackstart}
 %attr(755,root,root) %{_bindir}/jackd
+%attr(755,root,root) %{_bindir}/jack_alias
+%attr(755,root,root) %{_bindir}/jack_evmon
 %attr(755,root,root) %{_bindir}/jack_load
 %attr(755,root,root) %{_bindir}/jack_unload
 %dir %{_libdir}/jack
@@ -247,6 +249,7 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libjack.so.0
 
 %files devel
 %defattr(644,root,root,755)
