@@ -1,0 +1,6 @@
+- up to 0.118.0
+- BR tetex-pdftex instead of texlive-pdftex, both tetex and texlive
+  can be used
+- dynamic SIMD detection turned on
+- any in-configure and in-spec optimization flags ignored or dropped,
+  used only those from rpm-macros
