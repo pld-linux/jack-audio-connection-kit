@@ -29,7 +29,7 @@ BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
-%{?with_apidocs:BuildRequires:	tetex-pdftex}
+%{?with_apidocs:BuildRequires:	texlive-pdftex}
 Obsoletes:	jack-audio-connection-kit-driver-alsa
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
 Requires:	%{name}-libs = %{version}-%{release}
