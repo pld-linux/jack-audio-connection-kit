@@ -21,18 +21,20 @@ URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
+BuildRequires:	celt-devel
 %{?with_apidocs:BuildRequires:	doxygen}
 %{?with_cap:BuildRequires:	libcap-devel}
 %{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
+BuildRequires:	libsamplerate-devel
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 %{?with_apidocs:BuildRequires:	texlive-pdftex}
+Requires:	%{name}-libs = %{version}-%{release}
 Obsoletes:	jack-audio-connection-kit-driver-alsa
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
-Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
