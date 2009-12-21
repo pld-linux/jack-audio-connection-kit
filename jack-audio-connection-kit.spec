@@ -9,16 +9,15 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	0.109.2
-Release:	2
+Version:	0.118.0
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
-Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
-# Source0-md5:	4d8f795a6c566b9753a86038367e7e32
-Patch0:		%{name}-optimized-cflags.patch
-Patch1:		%{name}-gcc4.patch
-Patch2:		%{name}-readline.patch
-URL:		http://jackit.sourceforge.net/
+Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
+# Source0-md5:	d58e29a55f285d54e75134cec8e02a10
+Patch0:		%{name}-gcc4.patch
+Patch1:		%{name}-readline.patch
+URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -30,16 +29,11 @@ BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
-%{?with_apidocs:BuildRequires:	texlive-pdftex}
+%{?with_apidocs:BuildRequires:	tetex-pdftex}
 Obsoletes:	jack-audio-connection-kit-driver-alsa
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
 Requires:	%{name}-libs = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		specflags_ia32		-fomit-frame-pointer -ffast-math
-%define		specflags_pentium3	-mfpmath=sse
-%define		specflags_pentium4	-mfpmath=sse
-%define		specflags_x86_64	-ffast-math
 
 %description
 JACK is a low-latency audio server, written primarily for the Linux
@@ -164,7 +158,6 @@ wymaga biblioteki libsndfile.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -174,6 +167,7 @@ wymaga biblioteki libsndfile.
 %{__autoconf}
 
 %configure \
+	--enable-dynsimd \
 	%{?debug:--enable-debug} \
 	--disable-coreaudio \
 	%{!?with_freebob:--disable-freebob} \
@@ -183,21 +177,6 @@ wymaga biblioteki libsndfile.
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
 	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
 	%{?with_static_libs:--enable-static} \
-%ifarch athlon pentium3 pentium4 %{x8664}
-	--enable-mmx \
-%else
-	--disable-mmx \
-%endif
-%ifarch pentium3 pentium4 %{x8664}
-	--enable-sse \
-%else
-	--disable-sse \
-%endif
-%ifarch ppc
-	--enable-altivec \
-%else
-	--disable-altivec \
-%endif
 	--enable-ensure-mlock \
 	--enable-preemption-check \
 	--enable-resize \
@@ -244,6 +223,7 @@ fi
 %dir %{_libdir}/jack
 %attr(755,root,root) %{_libdir}/jack/jack_alsa.so
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
+%attr(755,root,root) %{_libdir}/jack/jack_net.so
 %attr(755,root,root) %{_libdir}/jack/jack_oss.so
 %{_mandir}/man1/*
 
@@ -251,11 +231,14 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libjack.so.0
+%attr(755,root,root) %{_libdir}/libjackserver.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libjackserver.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so
 %{_libdir}/libjack.la
+%{_libdir}/libjackserver.la
 %{_includedir}/jack
 %{_pkgconfigdir}/jack.pc
 
@@ -263,6 +246,7 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libjack.a
+%{_libdir}/libjackserver.a
 %endif
 
 %if %{with apidocs}
@@ -279,6 +263,8 @@ fi
 
 %files example-clients
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/alsa_in
+%attr(755,root,root) %{_bindir}/alsa_out
 %attr(755,root,root) %{_bindir}/jack_bufsize
 %attr(755,root,root) %{_bindir}/jack_connect
 %attr(755,root,root) %{_bindir}/jack_disconnect
@@ -289,9 +275,13 @@ fi
 %attr(755,root,root) %{_bindir}/jack_midiseq
 %attr(755,root,root) %{_bindir}/jack_midisine
 %attr(755,root,root) %{_bindir}/jack_monitor_client
+%attr(755,root,root) %{_bindir}/jack_netsource
+%attr(755,root,root) %{_bindir}/jack_samplerate
 %attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
 %attr(755,root,root) %{_bindir}/jack_transport
+%attr(755,root,root) %{_bindir}/jack_transport_client
+%attr(755,root,root) %{_bindir}/jack_wait
 %attr(755,root,root) %{_libdir}/jack/inprocess.so
 %attr(755,root,root) %{_libdir}/jack/intime.so
 
