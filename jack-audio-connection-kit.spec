@@ -11,7 +11,7 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
 Version:	0.103.0
-Release:	3
+Release:	4
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://dl.sourceforge.net/jackit/%{name}-%{version}.tar.gz
@@ -25,14 +25,14 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 %{?with_apidocs:BuildRequires:	doxygen}
 %{?with_cap:BuildRequires:	libcap-devel}
-%{?with_freebob:BuildRequires: libfreebob-devel >= 1.0.0}
+%{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
-Obsoletes:	jack-audio-connection-kit-driver-iec61883
 Requires:	%{name}-libs = %{version}-%{release}
+Obsoletes:	jack-audio-connection-kit-driver-iec61883
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32		-fomit-frame-pointer -ffast-math
