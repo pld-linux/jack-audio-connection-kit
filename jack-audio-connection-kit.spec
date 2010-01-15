@@ -195,7 +195,7 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT \
 	HTML_DIR=%{_gtkdocdir}/%{name}
 
-%{?!with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
+%{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
 
