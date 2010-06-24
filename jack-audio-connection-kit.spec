@@ -66,7 +66,7 @@ wykonywaniu wszystkich klientów i małych opóźnieniach działania.
 %package libs
 Summary:	JACK library
 Summary(pl.UTF-8):	Biblioteka JACK-a
-License:	LGPL
+License:	LGPL v2.1+
 Group:		Libraries
 Conflicts:	jack-audio-connection-kit < 0.100.7
 
@@ -79,7 +79,7 @@ Biblioteka współdzielona JACK-a.
 %package devel
 Summary:	Header files for JACK
 Summary(pl.UTF-8):	JACK - pliki nagłówkowe
-License:	LGPL
+License:	LGPL v2.1+
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 
@@ -92,7 +92,7 @@ Pliki nagłówkowe dla zestawu do połączeń audio JACK.
 %package static
 Summary:	Static JACK library
 Summary(pl.UTF-8):	Statyczna biblioteka JACK
-License:	LGPL
+License:	LGPL v2.1+
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -117,7 +117,7 @@ Dokumentacja API JACK Audio Connection Kit.
 %package driver-freebob
 Summary:	FreeBoB sound driver for JACK
 Summary(pl.UTF-8):	Sterownik dźwięku FreeBoB dla JACK-a
-License:	GPL
+License:	GPL v2+
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -130,7 +130,7 @@ Sterownik dźwięku FreeBoB (do platformy BeBoB) dla JACK-a.
 %package example-clients
 Summary:	Example clients that use JACK
 Summary(pl.UTF-8):	Przykładowe programy kliencie używające JACK-a
-License:	GPL
+License:	GPL v2+
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
 
@@ -144,7 +144,7 @@ połączeń audio JACK.
 %package example-jackrec
 Summary:	Example JACK client: jackrec
 Summary(pl.UTF-8):	Przykładowy klient zestawu JACK: jackrec
-License:	GPL
+License:	GPL v2+
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
 
@@ -227,7 +227,8 @@ fi
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
 %attr(755,root,root) %{_libdir}/jack/jack_net.so
 %attr(755,root,root) %{_libdir}/jack/jack_oss.so
-%{_mandir}/man1/*
+%{_mandir}/man1/jackd.1*
+%{_mandir}/man1/jackstart.1*
 
 %files libs
 %defattr(644,root,root,755)
@@ -239,6 +240,7 @@ fi
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so
+%attr(755,root,root) %{_libdir}/libjackserver.so
 %{_libdir}/libjack.la
 %{_libdir}/libjackserver.la
 %{_includedir}/jack
