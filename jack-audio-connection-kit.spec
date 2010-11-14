@@ -17,6 +17,7 @@ Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
 # Source0-md5:	d58e29a55f285d54e75134cec8e02a10
 Patch0:		%{name}-gcc4.patch
 Patch1:		%{name}-readline.patch
+Patch2:		link.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
@@ -160,6 +161,7 @@ wymaga biblioteki libsndfile.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}

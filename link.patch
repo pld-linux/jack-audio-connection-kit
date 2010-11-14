@@ -1,0 +1,12 @@
+- fix for "Unresolved symbols found"
+--- jack-audio-connection-kit-0.118.0/jackd/Makefile.am.orig	2010-11-14 22:28:32.990814744 +0100
++++ jack-audio-connection-kit-0.118.0/jackd/Makefile.am	2010-11-14 22:29:49.581638826 +0100
+@@ -51,7 +51,7 @@ libjackserver_la_SOURCES = engine.c clie
+         ../libjack/midiport.c ../libjack/ringbuffer.c ../libjack/shm.c \
+         ../libjack/thread.c ../libjack/time.c  ../libjack/transclient.c \
+         ../libjack/unlock.c
+-libjackserver_la_LIBADD  = simd.lo @OS_LDFLAGS@
++libjackserver_la_LIBADD  = simd.lo @OS_LDFLAGS@ $(CAP_LIBS)
+ libjackserver_la_LDFLAGS  = -export-dynamic -version-info @JACK_SO_VERSION@
+ 
+ simd.lo: $(srcdir)/../libjack/simd.c
