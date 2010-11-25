@@ -10,7 +10,7 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
 Version:	0.118.0
-Release:	4
+Release:	6
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
@@ -18,6 +18,7 @@ Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
 Patch0:		%{name}-gcc4.patch
 Patch1:		%{name}-readline.patch
 Patch2:		link.patch
+Patch3:		%{name}-celt.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
@@ -162,6 +163,7 @@ wymaga biblioteki libsndfile.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p3
 
 %build
 %{__libtoolize}

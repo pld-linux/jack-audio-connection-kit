@@ -1,0 +1,120 @@
+Index: /trunk/jack/tools/netsource.c
+===================================================================
+--- /trunk/jack/tools/netsource.c (revision 4030)
++++ /trunk/jack/tools/netsource.c (revision 4058)
+@@ -138,5 +138,5 @@
+ 	if( bitdepth == 1000 ) {
+ #if HAVE_CELT
+-#if HAVE_CELT_API_0_7
++#if HAVE_CELT_API_0_7 || HAVE_CELT_API_0_8
+ 	    CELTMode *celt_mode = celt_mode_create( jack_get_sample_rate( client ), jack_get_buffer_size(client), NULL );
+ 	    capture_srcs = jack_slist_append(capture_srcs, celt_decoder_create( celt_mode, 1, NULL ) );
+@@ -181,5 +181,5 @@
+ 	if( bitdepth == 1000 ) {
+ #if HAVE_CELT
+-#if HAVE_CELT_API_0_7
++#if HAVE_CELT_API_0_7 || HAVE_CELT_API_0_8
+ 	    CELTMode *celt_mode = celt_mode_create( jack_get_sample_rate (client), jack_get_buffer_size(client), NULL );
+ 	    playback_srcs = jack_slist_append(playback_srcs, celt_encoder_create( celt_mode, 1, NULL ) );
+Index: /trunk/jack/configure.ac
+===================================================================
+--- /trunk/jack/configure.ac (revision 4056)
++++ /trunk/jack/configure.ac (revision 4058)
+@@ -717,24 +717,36 @@
+ # Celt low-latency audio codec. netjack transmission via internet.
+ HAVE_CELT=false
+-PKG_CHECK_MODULES(CELT, celt >= 0.7.0,[HAVE_CELT=true], [true])
++PKG_CHECK_MODULES(CELT, celt >= 0.8.0,[HAVE_CELT=true], [true])
+ if test x$HAVE_CELT = xfalse; then
+-	PKG_CHECK_MODULES(CELT, celt >= 0.5.0,[HAVE_CELT=true], [true])
++	PKG_CHECK_MODULES(CELT, celt >= 0.7.0,[HAVE_CELT=true], [true])
+ 	if test x$HAVE_CELT = xfalse; then
+-		AC_DEFINE(HAVE_CELT,0,"Whether CELT is available")
+-		AC_MSG_RESULT(no)
+-		AC_MSG_WARN([*** NetJack will not be built with celt support])
++		PKG_CHECK_MODULES(CELT, celt >= 0.5.0,[HAVE_CELT=true], [true])
++		if test x$HAVE_CELT = xfalse; then
++			AC_DEFINE(HAVE_CELT,0,"Whether CELT is available")
++			AC_MSG_RESULT(no)
++			AC_MSG_WARN([*** NetJack will not be built with celt support])
++		else
++			AC_DEFINE(HAVE_CELT,1,"Whether CELT is available")
++			AC_DEFINE(HAVE_CELT_API_0_5,1,"Whether CELT API is 0.5 API")
++			AC_DEFINE(HAVE_CELT_API_0_7,0,"Whether CELT API is 0.7 API")
++			AC_DEFINE(HAVE_CELT_API_0_8,0,"Whether CELT API is 0.8 API")
++			AC_MSG_RESULT(yes (0.5))
++			NETJACK_LIBS="$NETJACK_LIBS $CELT_LIBS"
++		fi
+ 	else
+ 		AC_DEFINE(HAVE_CELT,1,"Whether CELT is available")
+-		AC_DEFINE(HAVE_CELT_API_0_5,1,"Whether CELT API is 0.5 API")
+-		AC_DEFINE(HAVE_CELT_API_0_7,0,"Whether CELT API is 0.7 API")
+-		AC_MSG_RESULT(yes (0.5))
++		AC_MSG_RESULT(yes (0.7))
++		AC_DEFINE(HAVE_CELT_API_0_5,0,"Whether CELT API is 0.5 API")
++		AC_DEFINE(HAVE_CELT_API_0_7,1,"Whether CELT API is 0.7 API")
++		AC_DEFINE(HAVE_CELT_API_0_8,0,"Whether CELT API is 0.8 API")
+ 		NETJACK_LIBS="$NETJACK_LIBS $CELT_LIBS"
+ 	fi
+ else
+-    	AC_DEFINE(HAVE_CELT,1,"Whether CELT is available")
+-	AC_MSG_RESULT(yes (0.7))
+-	AC_DEFINE(HAVE_CELT_API_0_5,0,"Whether CELT API is 0.5 API")
+-	AC_DEFINE(HAVE_CELT_API_0_7,1,"Whether CELT API is 0.7 API")
+-	NETJACK_LIBS="$NETJACK_LIBS $CELT_LIBS"
++		AC_DEFINE(HAVE_CELT,1,"Whether CELT is available")
++		AC_MSG_RESULT(yes (0.7))
++		AC_DEFINE(HAVE_CELT_API_0_5,0,"Whether CELT API is 0.5 API")
++		AC_DEFINE(HAVE_CELT_API_0_7,0,"Whether CELT API is 0.7 API")
++		AC_DEFINE(HAVE_CELT_API_0_8,1,"Whether CELT API is 0.8 API")
++		NETJACK_LIBS="$NETJACK_LIBS $CELT_LIBS"
+ fi
+ 
+Index: /trunk/jack/drivers/netjack/netjack.c
+===================================================================
+--- /trunk/jack/drivers/netjack/netjack.c (revision 4030)
++++ /trunk/jack/drivers/netjack/netjack.c (revision 4058)
+@@ -374,5 +374,5 @@
+     {
+ #if HAVE_CELT
+-#if HAVE_CELT_API_0_7
++#if HAVE_CELT_API_0_7 || HAVE_CELT_API_0_8
+ 	    celt_int32 lookahead;
+ 	    netj->celt_mode = celt_mode_create( netj->sample_rate, netj->period_size, NULL );
+@@ -453,5 +453,5 @@
+ 	if( netj->bitdepth == CELT_MODE ) {
+ #if HAVE_CELT
+-#if HAVE_CELT_API_0_7
++#if HAVE_CELT_API_0_7 || HAVE_CELT_API_0_8
+ 	    CELTMode *celt_mode = celt_mode_create( netj->sample_rate, netj->period_size, NULL );
+ 	    netj->playback_srcs = jack_slist_append(netj->playback_srcs, celt_encoder_create( celt_mode, 1, NULL ) );
+Index: /trunk/jack/drivers/netjack/netjack_packet.c
+===================================================================
+--- /trunk/jack/drivers/netjack/netjack_packet.c (revision 4030)
++++ /trunk/jack/drivers/netjack/netjack_packet.c (revision 4058)
+@@ -1370,8 +1370,15 @@
+ 
+ 	    CELTDecoder *decoder = src_node->data;
++#if HAVE_CELT_API_0_8
++	    if( !packet_payload )
++		celt_decode_float( decoder, NULL, net_period_down, buf, nframes );
++	    else
++		celt_decode_float( decoder, packet_bufX, net_period_down, buf, nframes );
++#else
+ 	    if( !packet_payload )
+ 		celt_decode_float( decoder, NULL, net_period_down, buf );
+ 	    else
+ 		celt_decode_float( decoder, packet_bufX, net_period_down, buf );
++#endif
+ 
+ 	    src_node = jack_slist_next (src_node);
+@@ -1415,5 +1422,9 @@
+ 	    memcpy( floatbuf, buf, nframes*sizeof(float) );
+ 	    CELTEncoder *encoder = src_node->data;
++#if HAVE_CELT_API_0_8
++	    encoded_bytes = celt_encode_float( encoder, floatbuf, nframes, packet_bufX, net_period_up );
++#else
+ 	    encoded_bytes = celt_encode_float( encoder, floatbuf, NULL, packet_bufX, net_period_up );
++#endif
+ 	    if( encoded_bytes != net_period_up )
+ 		printf( "something in celt changed. netjack needs to be changed to handle this.\n" );
