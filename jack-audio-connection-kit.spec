@@ -1,31 +1,28 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# don't generate documentation with doxygen
-%bcond_without	cap		# don't use capabilities to get real-time priority (needs suid root binary)
-%bcond_without	posix_shm	# don't use posix shm
-%bcond_without	static_libs	# don't build static libs
+%bcond_with	firewire	# build FFADO driver
 %bcond_without	freebob		# don't build freebob driver
+%bcond_with	classic		# build also classic jackd server (see http://trac.jackaudio.org/wiki/JackDbusPackaging)
 #
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	0.118.0
-Release:	7
+Version:	1.9.7
+Release:	0.3
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
-Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
-# Source0-md5:	d58e29a55f285d54e75134cec8e02a10
-Patch0:		%{name}-gcc4.patch
-Patch1:		%{name}-readline.patch
-Patch2:		link.patch
-Patch3:		%{name}-celt.patch
+Source0:	http://www.grame.fr/~letz/jack-%{version}.tar.bz2
+# Source0-md5:	9759670feecbd43eeccf1c0f743ec199
+Patch0:		jack-freebob-buildfix.patch
+Patch1:		jack-doxygen-output-dirs.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 0.9.0
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	celt-devel
+BuildRequires:	dbus-devel
 %{?with_apidocs:BuildRequires:	doxygen}
-%{?with_cap:BuildRequires:	libcap-devel}
 %{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libsndfile-devel >= 1.0.0
@@ -129,6 +126,19 @@ FreeBoB (BeBoB platform) sound driver for JACK.
 %description driver-freebob -l pl.UTF-8
 Sterownik dźwięku FreeBoB (do platformy BeBoB) dla JACK-a.
 
+%package driver-oss
+Summary:	OSS sound driver for JACK
+Summary(pl.UTF-8):	Sterownik dźwięku OSS dla JACK-a
+License:	GPL v2+
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description driver-oss
+OSS (Open Sound System) sound driver for JACK.
+
+%description driver-oss -l pl.UTF-8
+Sterownik dźwięku OSS (Open Sound System) dla JACK-a.
+
 %package example-clients
 Summary:	Example clients that use JACK
 Summary(pl.UTF-8):	Przykładowe programy kliencie używające JACK-a
@@ -159,49 +169,43 @@ Przykładowy klient zestawu JACK: jackrec. Jest wydzielony, ponieważ
 wymaga biblioteki libsndfile.
 
 %prep
-%setup -q
+%setup -q -n jack-%{version}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p3
 
 %build
-%{__libtoolize}
-%{__aclocal} -I config
-%{__autoheader}
-%{__automake}
-%{__autoconf}
+export CFLAGS="%{rpmcflags} -I/usr/include/ncurses"
+export CXXFLAGS="%{rpmcxxflags} -I/usr/include/ncurses"
+export CPPFLAGS="%{rpmcxxflags} -I/usr/include/ncurses"
+export LINKFLAGS="%{rpmldflags}"
 
-%configure \
-	--enable-dynsimd \
-	%{?debug:--enable-debug} \
-	--disable-coreaudio \
-	%{!?with_freebob:--disable-freebob} \
-	--disable-oldtrans \
-	--disable-portaudio \
-	--enable-oss \
-	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
-	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
-	%{?with_static_libs:--enable-static} \
-	--enable-ensure-mlock \
-	--enable-preemption-check \
-	--enable-resize \
-	--enable-timestamps \
-	--with-default-tmpdir=/tmp \
-	--with-html-dir=%{_gtkdocdir}/%{name}
+./waf configure \
+	-v \
+	%{?debug:--debug} \
+	--prefix=%{_prefix} \
+	--libdir=/%{_lib} \
+	--libdir32=/lib \
+	--dbus \
+	%{?with_classic:--classic} \
+	%{?with_apidocs:--doxygen} \
+	%{?with_firewire:--firewire} \
+	%{?with_freebob:--freebob} \
+	--alsa
 
-%{__make}
+./waf build %{?_smp_mflags} -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	HTML_DIR=%{_gtkdocdir}/%{name}
+
+HTML_DIR=%{_gtkdocdir}/%{name}/reference \
+./waf install \
+	--destdir=$RPM_BUILD_ROOT
 
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
-rm -f $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
+# For compatibility with jack1
+mv $RPM_BUILD_ROOT%{_bindir}/jack_rec $RPM_BUILD_ROOT%{_bindir}/jackrec
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -209,30 +213,46 @@ rm -rf $RPM_BUILD_ROOT
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%if %{with posix_shm}
 %verifyscript libs
 if ! grep -q -s '^[^ ]* /dev/shm tmpfs ' /proc/mounts ; then
-	echo "/dev/shm is not mounted, but JACK compiled with POSIX_SHM requires it"
+	echo "/dev/shm is not mounted, but JACK requires it"
 fi
-%endif
 
 %files
 %defattr(644,root,root,755)
-# note: COPYING only specifies which parts fall under GPL and LGPL
-%doc AUTHORS TODO COPYING
-%{?with_cap:%attr(4755,root,root) %{_bindir}/jackstart}
-%attr(755,root,root) %{_bindir}/jackd
+%doc ChangeLog README* TODO
 %attr(755,root,root) %{_bindir}/jack_alias
+%attr(755,root,root) %{_bindir}/jack_control
+%attr(755,root,root) %{_bindir}/jack_cpu
+%attr(755,root,root) %{_bindir}/jack_cpu_load
 %attr(755,root,root) %{_bindir}/jack_evmon
+%attr(755,root,root) %{_bindir}/jack_iodelay
+%attr(755,root,root) %{_bindir}/jack_latent_client
 %attr(755,root,root) %{_bindir}/jack_load
+%attr(755,root,root) %{_bindir}/jack_midi_dump
+%attr(755,root,root) %{_bindir}/jack_server_control
+%attr(755,root,root) %{_bindir}/jack_session_notify
+%attr(755,root,root) %{_bindir}/jack_test
+%attr(755,root,root) %{_bindir}/jack_thru
 %attr(755,root,root) %{_bindir}/jack_unload
+%attr(755,root,root) %{_bindir}/jack_zombie
+%{?with_classic:%attr(755,root,root) %{_bindir}/jackd}
+%attr(755,root,root) %{_bindir}/jackdbus
 %dir %{_libdir}/jack
+%attr(755,root,root) %{_libdir}/jack/audioadapter.so
 %attr(755,root,root) %{_libdir}/jack/jack_alsa.so
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
+%attr(755,root,root) %{_libdir}/jack/jack_loopback.so
+%attr(755,root,root) %{_libdir}/jack/jack_netone.so
 %attr(755,root,root) %{_libdir}/jack/jack_net.so
-%attr(755,root,root) %{_libdir}/jack/jack_oss.so
-%{_mandir}/man1/jackd.1*
-%{_mandir}/man1/jackstart.1*
+%attr(755,root,root) %{_libdir}/jack/netadapter.so
+%attr(755,root,root) %{_libdir}/jack/netmanager.so
+%attr(755,root,root) %{_libdir}/jack/profiler.so
+%{_datadir}/dbus-1/services/org.jackaudio.service
+%{?with_classic:%{_mandir}/man1/jackd.1*}
+%{_mandir}/man1/jack_iodelay.1*
+%{_mandir}/man1/jack_load.1*
+%{_mandir}/man1/jack_unload.1*
 
 %files libs
 %defattr(644,root,root,755)
@@ -245,17 +265,8 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so
 %attr(755,root,root) %{_libdir}/libjackserver.so
-%{_libdir}/libjack.la
-%{_libdir}/libjackserver.la
 %{_includedir}/jack
 %{_pkgconfigdir}/jack.pc
-
-%if %{with static_libs}
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libjack.a
-%{_libdir}/libjackserver.a
-%endif
 
 %if %{with apidocs}
 %files apidocs
@@ -277,22 +288,37 @@ fi
 %attr(755,root,root) %{_bindir}/jack_connect
 %attr(755,root,root) %{_bindir}/jack_disconnect
 %attr(755,root,root) %{_bindir}/jack_freewheel
-%attr(755,root,root) %{_bindir}/jack_impulse_grabber
 %attr(755,root,root) %{_bindir}/jack_lsp
 %attr(755,root,root) %{_bindir}/jack_metro
 %attr(755,root,root) %{_bindir}/jack_midiseq
 %attr(755,root,root) %{_bindir}/jack_midisine
 %attr(755,root,root) %{_bindir}/jack_monitor_client
+%attr(755,root,root) %{_bindir}/jack_multiple_metro
 %attr(755,root,root) %{_bindir}/jack_netsource
 %attr(755,root,root) %{_bindir}/jack_samplerate
 %attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
+%attr(755,root,root) %{_bindir}/jack_simple_session_client
 %attr(755,root,root) %{_bindir}/jack_transport
-%attr(755,root,root) %{_bindir}/jack_transport_client
 %attr(755,root,root) %{_bindir}/jack_wait
 %attr(755,root,root) %{_libdir}/jack/inprocess.so
-%attr(755,root,root) %{_libdir}/jack/intime.so
+%{_mandir}/man1/alsa_in.1*
+%{_mandir}/man1/alsa_out.1*
+%{_mandir}/man1/jack_bufsize.1*
+%{_mandir}/man1/jack_connect.1*
+%{_mandir}/man1/jack_disconnect.1*
+%{_mandir}/man1/jack_freewheel.1*
+%{_mandir}/man1/jack_lsp.1*
+%{_mandir}/man1/jack_metro.1*
+%{_mandir}/man1/jack_monitor_client.1*
+%{_mandir}/man1/jack_netsource.1*
+%{_mandir}/man1/jack_samplerate.1*
+%{_mandir}/man1/jack_showtime.1*
+%{_mandir}/man1/jack_simple_client.1*
+%{_mandir}/man1/jack_transport.1*
+%{_mandir}/man1/jack_wait.1*
 
 %files example-jackrec
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/jackrec
+%{_mandir}/man1/jackrec.1*
