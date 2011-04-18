@@ -126,19 +126,6 @@ FreeBoB (BeBoB platform) sound driver for JACK.
 %description driver-freebob -l pl.UTF-8
 Sterownik dźwięku FreeBoB (do platformy BeBoB) dla JACK-a.
 
-%package driver-oss
-Summary:	OSS sound driver for JACK
-Summary(pl.UTF-8):	Sterownik dźwięku OSS dla JACK-a
-License:	GPL v2+
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-
-%description driver-oss
-OSS (Open Sound System) sound driver for JACK.
-
-%description driver-oss -l pl.UTF-8
-Sterownik dźwięku OSS (Open Sound System) dla JACK-a.
-
 %package example-clients
 Summary:	Example clients that use JACK
 Summary(pl.UTF-8):	Przykładowe programy kliencie używające JACK-a
