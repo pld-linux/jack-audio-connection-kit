@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# don't generate documentation with doxygen
-%bcond_with	firewire	# build FFADO driver
+%bcond_without	firewire	# build FFADO driver
 %bcond_without	freebob		# don't build freebob driver
 %bcond_with	classic		# build also classic jackd server (see http://trac.jackaudio.org/wiki/JackDbusPackaging)
 #
@@ -9,7 +9,7 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
 Version:	1.9.7
-Release:	0.3
+Release:	0.4
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://www.grame.fr/~letz/jack-%{version}.tar.bz2
@@ -23,6 +23,7 @@ BuildRequires:	automake
 BuildRequires:	celt-devel
 BuildRequires:	dbus-devel
 %{?with_apidocs:BuildRequires:	doxygen}
+%{?with_firewire:BuildRequires:	libffado-devel}
 %{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libsndfile-devel >= 1.0.0
@@ -112,6 +113,19 @@ JACK Audio Connection Kit API documentation.
 
 %description apidocs -l pl.UTF-8
 Dokumentacja API JACK Audio Connection Kit.
+
+%package driver-firewire
+Summary:	FireWire (FFADO) sound driver for JACK
+Summary(pl.UTF-8):	Sterownik dźwięku FireWire (FFADO) dla JACK-a
+License:	GPL v2+
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description driver-firewire
+FireWire (FFADO) sound driver for JACK.
+
+%description driver-firewire -l pl.UTF-8
+Sterownik dźwięku FireWire (FFADO) dla JACK-a.
 
 %package driver-freebob
 Summary:	FreeBoB sound driver for JACK
@@ -259,6 +273,12 @@ fi
 %files apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/%{name}
+%endif
+
+%if %{with firewire}
+%files driver-firewire
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/jack/jack_firewire.so
 %endif
 
 %if %{with freebob}
