@@ -9,7 +9,7 @@ Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
 Version:	1.9.7
-Release:	1
+Release:	2
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 Source0:	http://www.grame.fr/~letz/jack-%{version}.tar.bz2
@@ -206,6 +206,10 @@ HTML_DIR=%{_gtkdocdir}/%{name}/reference \
 
 # For compatibility with jack1
 mv $RPM_BUILD_ROOT%{_bindir}/jack_rec $RPM_BUILD_ROOT%{_bindir}/jackrec
+
+# fix perms (needed for autorequires/provides)
+chmod a+x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
+chmod a+x $RPM_BUILD_ROOT%{_libdir}/jack/*.so
 
 %clean
 rm -rf $RPM_BUILD_ROOT
