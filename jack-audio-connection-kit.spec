@@ -9,25 +9,26 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	0.118.0
-Release:	7
+Version:	0.120.1
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
+#Source0Download: http://jackaudio.org/download
 Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
-# Source0-md5:	d58e29a55f285d54e75134cec8e02a10
+# Source0-md5:	e45bab906be64e4e2752cbd855a8efd5
 Patch0:		%{name}-gcc4.patch
 Patch1:		%{name}-readline.patch
 Patch2:		link.patch
-Patch3:		%{name}-celt.patch
 URL:		http://jackaudio.org/
-BuildRequires:	alsa-lib-devel >= 0.9.0
+BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-BuildRequires:	celt-devel
+BuildRequires:	celt-devel >= 0.5.0
 %{?with_apidocs:BuildRequires:	doxygen}
 %{?with_cap:BuildRequires:	libcap-devel}
+%{?with_ffado:BuildRequires:	libffado-devel >= 1.999.17}
 %{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
-BuildRequires:	libsamplerate-devel
+BuildRequires:	libsamplerate-devel >= 0.1.2
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
@@ -116,6 +117,19 @@ JACK Audio Connection Kit API documentation.
 %description apidocs -l pl.UTF-8
 Dokumentacja API JACK Audio Connection Kit.
 
+%package driver-firewire
+Summary:	FireWire (FFADO) sound driver for JACK
+Summary(pl.UTF-8):	Sterownik dźwięku FireWire (FFADO) dla JACK-a
+License:	GPL v2+
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description driver-firewire
+FireWire (FFADO) sound driver for JACK.
+
+%description driver-firewire -l pl.UTF-8
+Sterownik dźwięku FireWire (FFADO) dla JACK-a.
+
 %package driver-freebob
 Summary:	FreeBoB sound driver for JACK
 Summary(pl.UTF-8):	Sterownik dźwięku FreeBoB dla JACK-a
@@ -163,7 +177,6 @@ wymaga biblioteki libsndfile.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p3
 
 %build
 %{__libtoolize}
@@ -176,12 +189,13 @@ wymaga biblioteki libsndfile.
 	--enable-dynsimd \
 	%{?debug:--enable-debug} \
 	--disable-coreaudio \
+	%{!?with_ffado:--disable-ffado} \
 	%{!?with_freebob:--disable-freebob} \
 	--disable-oldtrans \
 	--disable-portaudio \
 	--enable-oss \
 	%{?with_cap:--enable-capabilities %{!?debug:--enable-stripped-jackd}} \
-	--%{?with_posix_shm:en}%{!?with_posix_shm:dis}able-posix-shm \
+	--enable-posix-shm%{!?with_posix_shm:=no} \
 	%{?with_static_libs:--enable-static} \
 	--enable-ensure-mlock \
 	--enable-preemption-check \
@@ -201,7 +215,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
-rm -f $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -224,9 +238,13 @@ fi
 %attr(755,root,root) %{_bindir}/jackd
 %attr(755,root,root) %{_bindir}/jack_alias
 %attr(755,root,root) %{_bindir}/jack_evmon
+%attr(755,root,root) %{_bindir}/jack_iodelay
 %attr(755,root,root) %{_bindir}/jack_load
+%attr(755,root,root) %{_bindir}/jack_midi_dump
+%attr(755,root,root) %{_bindir}/jack_session_notify
 %attr(755,root,root) %{_bindir}/jack_unload
 %dir %{_libdir}/jack
+%attr(755,root,root) %{_libdir}/jack/a2j_in.so
 %attr(755,root,root) %{_libdir}/jack/jack_alsa.so
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
 %attr(755,root,root) %{_libdir}/jack/jack_net.so
@@ -263,6 +281,12 @@ fi
 %{_gtkdocdir}/%{name}
 %endif
 
+%if %{with ffado}
+%files driver-firewire
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/jack/jack_firewire.so
+%endif
+
 %if %{with freebob}
 %files driver-freebob
 %defattr(644,root,root,755)
@@ -278,6 +302,7 @@ fi
 %attr(755,root,root) %{_bindir}/jack_disconnect
 %attr(755,root,root) %{_bindir}/jack_freewheel
 %attr(755,root,root) %{_bindir}/jack_impulse_grabber
+%attr(755,root,root) %{_bindir}/jack_latent_client
 %attr(755,root,root) %{_bindir}/jack_lsp
 %attr(755,root,root) %{_bindir}/jack_metro
 %attr(755,root,root) %{_bindir}/jack_midiseq
@@ -287,6 +312,7 @@ fi
 %attr(755,root,root) %{_bindir}/jack_samplerate
 %attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
+%attr(755,root,root) %{_bindir}/jack_simple_session_client
 %attr(755,root,root) %{_bindir}/jack_transport
 %attr(755,root,root) %{_bindir}/jack_transport_client
 %attr(755,root,root) %{_bindir}/jack_wait
@@ -295,4 +321,4 @@ fi
 
 %files example-jackrec
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/jackrec
+%attr(755,root,root) %{_bindir}/jack_rec
