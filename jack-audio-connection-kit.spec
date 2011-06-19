@@ -4,6 +4,7 @@
 %bcond_without	cap		# don't use capabilities to get real-time priority (needs suid root binary)
 %bcond_without	posix_shm	# don't use posix shm
 %bcond_without	static_libs	# don't build static libs
+%bcond_without	ffado		# don't build firewire (FFADO) driver
 %bcond_without	freebob		# don't build freebob driver
 #
 Summary:	The JACK Audio Connection Kit
