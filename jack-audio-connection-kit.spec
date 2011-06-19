@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# don't generate documentation with doxygen
-%bcond_without	firewire	# build FFADO driver
+%bcond_without	ffado		# don't build firewire (FFADO) driver
 %bcond_without	freebob		# don't build freebob driver
 %bcond_with	classic		# build also classic jackd server (see http://trac.jackaudio.org/wiki/JackDbusPackaging)
 #
@@ -17,16 +17,18 @@ Source0:	http://www.grame.fr/~letz/jack-%{version}.tar.bz2
 Patch0:		jack-freebob-buildfix.patch
 Patch1:		jack-doxygen-output-dirs.patch
 URL:		http://jackaudio.org/
-BuildRequires:	alsa-lib-devel >= 0.9.0
+BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-BuildRequires:	celt-devel
-BuildRequires:	dbus-devel
+BuildRequires:	celt-devel >= 0.5.0
+BuildRequires:	dbus-devel >= 1.0.0
 %{?with_apidocs:BuildRequires:	doxygen}
-%{?with_firewire:BuildRequires:	libffado-devel}
+BuildRequires:	expat-devel
+%{?with_ffado:BuildRequires:	libffado-devel >= 1.999.17}
 %{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libsndfile-devel >= 1.0.0
+BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
@@ -68,6 +70,7 @@ Summary:	JACK library
 Summary(pl.UTF-8):	Biblioteka JACK-a
 License:	LGPL v2.1+
 Group:		Libraries
+Requires:	alsa-lib >= 1.0.18
 Conflicts:	jack-audio-connection-kit < 0.100.7
 
 %description libs
@@ -120,6 +123,7 @@ Summary(pl.UTF-8):	Sterownik dźwięku FireWire (FFADO) dla JACK-a
 License:	GPL v2+
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libffado >= 1.999.17
 
 %description driver-firewire
 FireWire (FFADO) sound driver for JACK.
@@ -133,6 +137,7 @@ Summary(pl.UTF-8):	Sterownik dźwięku FreeBoB dla JACK-a
 License:	GPL v2+
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libfreebob >= 1.0.0
 
 %description driver-freebob
 FreeBoB (BeBoB platform) sound driver for JACK.
@@ -142,7 +147,7 @@ Sterownik dźwięku FreeBoB (do platformy BeBoB) dla JACK-a.
 
 %package example-clients
 Summary:	Example clients that use JACK
-Summary(pl.UTF-8):	Przykładowe programy kliencie używające JACK-a
+Summary(pl.UTF-8):	Przykładowe programy klienckie używające JACK-a
 License:	GPL v2+
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
@@ -189,7 +194,7 @@ export LINKFLAGS="%{rpmldflags}"
 	--dbus \
 	%{?with_classic:--classic} \
 	%{?with_apidocs:--doxygen} \
-	%{?with_firewire:--firewire} \
+	%{?with_ffado:--firewire} \
 	%{?with_freebob:--freebob} \
 	--alsa
 
@@ -228,18 +233,14 @@ fi
 %attr(755,root,root) %{_bindir}/jack_alias
 %attr(755,root,root) %{_bindir}/jack_control
 %attr(755,root,root) %{_bindir}/jack_cpu
-%attr(755,root,root) %{_bindir}/jack_cpu_load
 %attr(755,root,root) %{_bindir}/jack_evmon
 %attr(755,root,root) %{_bindir}/jack_iodelay
-%attr(755,root,root) %{_bindir}/jack_latent_client
 %attr(755,root,root) %{_bindir}/jack_load
 %attr(755,root,root) %{_bindir}/jack_midi_dump
 %attr(755,root,root) %{_bindir}/jack_server_control
 %attr(755,root,root) %{_bindir}/jack_session_notify
 %attr(755,root,root) %{_bindir}/jack_test
-%attr(755,root,root) %{_bindir}/jack_thru
 %attr(755,root,root) %{_bindir}/jack_unload
-%attr(755,root,root) %{_bindir}/jack_zombie
 %{?with_classic:%attr(755,root,root) %{_bindir}/jackd}
 %attr(755,root,root) %{_bindir}/jackdbus
 %dir %{_libdir}/jack
@@ -278,7 +279,7 @@ fi
 %{_gtkdocdir}/%{name}
 %endif
 
-%if %{with firewire}
+%if %{with ffado}
 %files driver-firewire
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/jack/jack_firewire.so
@@ -296,8 +297,10 @@ fi
 %attr(755,root,root) %{_bindir}/alsa_out
 %attr(755,root,root) %{_bindir}/jack_bufsize
 %attr(755,root,root) %{_bindir}/jack_connect
+%attr(755,root,root) %{_bindir}/jack_cpu_load
 %attr(755,root,root) %{_bindir}/jack_disconnect
 %attr(755,root,root) %{_bindir}/jack_freewheel
+%attr(755,root,root) %{_bindir}/jack_latent_client
 %attr(755,root,root) %{_bindir}/jack_lsp
 %attr(755,root,root) %{_bindir}/jack_metro
 %attr(755,root,root) %{_bindir}/jack_midiseq
@@ -309,8 +312,10 @@ fi
 %attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
 %attr(755,root,root) %{_bindir}/jack_simple_session_client
+%attr(755,root,root) %{_bindir}/jack_thru
 %attr(755,root,root) %{_bindir}/jack_transport
 %attr(755,root,root) %{_bindir}/jack_wait
+%attr(755,root,root) %{_bindir}/jack_zombie
 %attr(755,root,root) %{_libdir}/jack/inprocess.so
 %{_mandir}/man1/alsa_in.1*
 %{_mandir}/man1/alsa_out.1*
