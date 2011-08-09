@@ -37,6 +37,7 @@ BuildRequires:	rpmbuild(macros) >= 1.98
 Requires:	%{name}-libs = %{version}-%{release}
 Obsoletes:	jack-audio-connection-kit-driver-alsa
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
+Obsoletes:	jack-audio-connection-kit-static
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -91,19 +92,6 @@ Header files for the JACK Audio Connection Kit.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe dla zestawu do połączeń audio JACK.
-
-%package static
-Summary:	Static JACK library
-Summary(pl.UTF-8):	Statyczna biblioteka JACK
-License:	LGPL v2.1+
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static JACK library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka JACK.
 
 %package apidocs
 Summary:	JACK Audio Connection Kit API documentation
