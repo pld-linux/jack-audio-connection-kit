@@ -8,14 +8,14 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	1.9.7
-Release:	2
+Version:	1.9.8
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
-Source0:	http://www.grame.fr/~letz/jack-%{version}.tar.bz2
-# Source0-md5:	9759670feecbd43eeccf1c0f743ec199
-Patch0:		jack-freebob-buildfix.patch
-Patch1:		jack-doxygen-output-dirs.patch
+#Source0Download: http://jackaudio.org/download
+Source0:	https://dl.dropbox.com/u/28869550/jack-%{version}.tgz
+# Source0-md5:	1dd2ff054cab79dfc11d134756f27165
+Patch0:		jack-doxygen-output-dirs.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
@@ -35,6 +35,7 @@ BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 %{?with_apidocs:BuildRequires:	texlive-pdftex}
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	alsa-lib >= 1.0.18
 Obsoletes:	jack-audio-connection-kit-driver-alsa
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
 Obsoletes:	jack-audio-connection-kit-static
@@ -71,7 +72,7 @@ Summary:	JACK library
 Summary(pl.UTF-8):	Biblioteka JACK-a
 License:	LGPL v2.1+
 Group:		Libraries
-Requires:	alsa-lib >= 1.0.18
+Requires:	dbus-libs >= 1.0.0
 Conflicts:	jack-audio-connection-kit < 0.100.7
 
 %description libs
@@ -164,10 +165,11 @@ wymaga biblioteki libsndfile.
 
 %prep
 %setup -q -n jack-%{version}
+cd jack-%{version}
 %patch0 -p1
-%patch1 -p1
 
 %build
+cd jack-%{version}
 export CFLAGS="%{rpmcflags} -I/usr/include/ncurses"
 export CXXFLAGS="%{rpmcxxflags} -I/usr/include/ncurses"
 export CPPFLAGS="%{rpmcxxflags} -I/usr/include/ncurses"
@@ -190,6 +192,7 @@ export LINKFLAGS="%{rpmldflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
+cd jack-%{version}
 
 HTML_DIR=%{_gtkdocdir}/%{name}/reference \
 ./waf install \
@@ -199,6 +202,10 @@ HTML_DIR=%{_gtkdocdir}/%{name}/reference \
 
 # For compatibility with jack1
 mv $RPM_BUILD_ROOT%{_bindir}/jack_rec $RPM_BUILD_ROOT%{_bindir}/jackrec
+
+# not built or packaged
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/jack_impulse_grabber.1 \
+	%{!?with_classic:$RPM_BUILD_ROOT%{_mandir}/man1/jackd.1}
 
 # fix perms (needed for autorequires/provides)
 chmod a+x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
@@ -217,7 +224,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog README* TODO
+%doc jack-%{version}/{ChangeLog,README*,TODO}
 %attr(755,root,root) %{_bindir}/jack_alias
 %attr(755,root,root) %{_bindir}/jack_control
 %attr(755,root,root) %{_bindir}/jack_cpu
@@ -225,6 +232,8 @@ fi
 %attr(755,root,root) %{_bindir}/jack_iodelay
 %attr(755,root,root) %{_bindir}/jack_load
 %attr(755,root,root) %{_bindir}/jack_midi_dump
+%attr(755,root,root) %{_bindir}/jack_net_master
+%attr(755,root,root) %{_bindir}/jack_net_slave
 %attr(755,root,root) %{_bindir}/jack_server_control
 %attr(755,root,root) %{_bindir}/jack_session_notify
 %attr(755,root,root) %{_bindir}/jack_test
@@ -234,6 +243,7 @@ fi
 %dir %{_libdir}/jack
 %attr(755,root,root) %{_libdir}/jack/audioadapter.so
 %attr(755,root,root) %{_libdir}/jack/jack_alsa.so
+%attr(755,root,root) %{_libdir}/jack/jack_alsarawmidi.so
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
 %attr(755,root,root) %{_libdir}/jack/jack_loopback.so
 %attr(755,root,root) %{_libdir}/jack/jack_netone.so
@@ -251,12 +261,15 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libjack.so.0
+%attr(755,root,root) %{_libdir}/libjacknet.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libjacknet.so.0
 %attr(755,root,root) %{_libdir}/libjackserver.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libjackserver.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjack.so
+%attr(755,root,root) %{_libdir}/libjacknet.so
 %attr(755,root,root) %{_libdir}/libjackserver.so
 %{_includedir}/jack
 %{_pkgconfigdir}/jack.pc
@@ -291,6 +304,7 @@ fi
 %attr(755,root,root) %{_bindir}/jack_latent_client
 %attr(755,root,root) %{_bindir}/jack_lsp
 %attr(755,root,root) %{_bindir}/jack_metro
+%attr(755,root,root) %{_bindir}/jack_midi_latency_test
 %attr(755,root,root) %{_bindir}/jack_midiseq
 %attr(755,root,root) %{_bindir}/jack_midisine
 %attr(755,root,root) %{_bindir}/jack_monitor_client
