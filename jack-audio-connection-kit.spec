@@ -10,13 +10,13 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	0.120.1
+Version:	0.121.3
 Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 #Source0Download: http://jackaudio.org/download
 Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
-# Source0-md5:	e45bab906be64e4e2752cbd855a8efd5
+# Source0-md5:	35f470f7422c37b33eb965033f7a42e8
 Patch0:		%{name}-gcc4.patch
 Patch1:		%{name}-readline.patch
 Patch2:		link.patch
@@ -30,13 +30,14 @@ BuildRequires:	celt-devel >= 0.5.0
 %{?with_ffado:BuildRequires:	libffado-devel >= 1.999.17}
 %{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
 BuildRequires:	libsamplerate-devel >= 0.1.2
-BuildRequires:	libsndfile-devel >= 1.0.0
+BuildRequires:	libsndfile-devel >= 1.0
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
 %{?with_apidocs:BuildRequires:	texlive-pdftex}
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	alsa-lib >= 1.0.18
 Obsoletes:	jack-audio-connection-kit-driver-alsa
 Obsoletes:	jack-audio-connection-kit-driver-iec61883
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -124,6 +125,7 @@ Summary(pl.UTF-8):	Sterownik dźwięku FireWire (FFADO) dla JACK-a
 License:	GPL v2+
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libffado >= 1.999.17
 
 %description driver-firewire
 FireWire (FFADO) sound driver for JACK.
@@ -137,6 +139,7 @@ Summary(pl.UTF-8):	Sterownik dźwięku FreeBoB dla JACK-a
 License:	GPL v2+
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libfreebob >= 1.0.0
 
 %description driver-freebob
 FreeBoB (BeBoB platform) sound driver for JACK.
@@ -150,6 +153,7 @@ Summary(pl.UTF-8):	Przykładowe programy kliencie używające JACK-a
 License:	GPL v2+
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
+Requires:	libsamplerate >= 0.1.2
 
 %description example-clients
 Small example clients that use the JACK Audio Connection Kit.
@@ -164,6 +168,7 @@ Summary(pl.UTF-8):	Przykładowy klient zestawu JACK: jackrec
 License:	GPL v2+
 Group:		Applications/Sound
 Requires:	%{name} = %{version}-%{release}
+Requires:	libsndfile >= 1.0
 
 %description example-jackrec
 Example JACK client: jackrec. It's separated because it uses
@@ -216,7 +221,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
+# loadable modules
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
+# test program
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/jack_load_test
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -243,10 +251,12 @@ fi
 %attr(755,root,root) %{_bindir}/jack_load
 %attr(755,root,root) %{_bindir}/jack_midi_dump
 %attr(755,root,root) %{_bindir}/jack_session_notify
+%attr(755,root,root) %{_bindir}/jack_server_control
 %attr(755,root,root) %{_bindir}/jack_unload
 %dir %{_libdir}/jack
 %attr(755,root,root) %{_libdir}/jack/a2j_in.so
 %attr(755,root,root) %{_libdir}/jack/jack_alsa.so
+%attr(755,root,root) %{_libdir}/jack/jack_alsa_midi.so
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
 %attr(755,root,root) %{_libdir}/jack/jack_net.so
 %attr(755,root,root) %{_libdir}/jack/jack_oss.so
