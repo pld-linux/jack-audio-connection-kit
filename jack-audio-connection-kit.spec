@@ -175,7 +175,7 @@ export CXXFLAGS="%{rpmcxxflags} -I/usr/include/ncurses"
 export CPPFLAGS="%{rpmcxxflags} -I/usr/include/ncurses"
 export LINKFLAGS="%{rpmldflags}"
 
-./waf configure \
+./waf configure -j1 \
 	-v \
 	%{?debug:--debug} \
 	--prefix=%{_prefix} \
