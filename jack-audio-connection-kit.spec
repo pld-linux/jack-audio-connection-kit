@@ -8,19 +8,19 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	1.9.8
-Release:	3
+Version:	1.9.9.5
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 #Source0Download: http://jackaudio.org/download
-Source0:	https://dl.dropbox.com/u/28869550/jack-%{version}.tgz
-# Source0-md5:	1dd2ff054cab79dfc11d134756f27165
+Source0:	http://jackaudio.org/downloads/jack-%{version}.tar.bz2
+# Source0-md5:	6c9de6b89db9d7076fa2ce222816cf4c
 Patch0:		jack-doxygen-output-dirs.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-BuildRequires:	celt-devel >= 0.5.0
+BuildRequires:	celt-devel >= 0.11.0
 BuildRequires:	dbus-devel >= 1.0.0
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	expat-devel
@@ -33,6 +33,8 @@ BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.98
+# with opus_custom interface
+BuildRequires:	opus-devel >= 1.0.3-2
 %{?with_apidocs:BuildRequires:	texlive-pdftex}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib >= 1.0.18
@@ -72,7 +74,9 @@ Summary:	JACK library
 Summary(pl.UTF-8):	Biblioteka JACK-a
 License:	LGPL v2.1+
 Group:		Libraries
+Requires:	celt >= 0.11.0
 Requires:	dbus-libs >= 1.0.0
+Requires:	opus >= 1.0.3-2
 Conflicts:	jack-audio-connection-kit < 0.100.7
 
 %description libs
@@ -165,11 +169,9 @@ wymaga biblioteki libsndfile.
 
 %prep
 %setup -q -n jack-%{version}
-cd jack-%{version}
 %patch0 -p1
 
 %build
-cd jack-%{version}
 export CFLAGS="%{rpmcflags} -I/usr/include/ncurses"
 export CXXFLAGS="%{rpmcxxflags} -I/usr/include/ncurses"
 export CPPFLAGS="%{rpmcxxflags} -I/usr/include/ncurses"
@@ -179,20 +181,18 @@ export LINKFLAGS="%{rpmldflags}"
 	-v \
 	%{?debug:--debug} \
 	--prefix=%{_prefix} \
-	--libdir=/%{_lib} \
-	--libdir32=/lib \
-	--dbus \
+	--libdir=%{_libdir} \
+	--alsa \
 	%{?with_classic:--classic} \
+	--dbus \
 	%{?with_apidocs:--doxygen} \
 	%{?with_ffado:--firewire} \
-	%{?with_freebob:--freebob} \
-	--alsa
+	%{?with_freebob:--freebob}
 
 ./waf build %{?_smp_mflags} -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd jack-%{version}
 
 HTML_DIR=%{_gtkdocdir}/%{name}/reference \
 ./waf install \
@@ -224,7 +224,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc jack-%{version}/{ChangeLog,README*,TODO}
+%doc ChangeLog README* TODO
 %attr(755,root,root) %{_bindir}/jack_alias
 %attr(755,root,root) %{_bindir}/jack_control
 %attr(755,root,root) %{_bindir}/jack_cpu
