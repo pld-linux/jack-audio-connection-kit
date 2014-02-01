@@ -10,21 +10,30 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	0.121.3
+Version:	0.124.1
 Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
-#Source0Download: http://jackaudio.org/download
-Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
-# Source0-md5:	35f470f7422c37b33eb965033f7a42e8
+# http://jackaudio.org/download - outdated?
+#Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
+Source0:	https://github.com/jackaudio/jack1/archive/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	5805ff4d4305f05a04a6cd9fa345733c
+Source1:	https://github.com/jackaudio/headers/archive/%{version}/jack-headers-%{version}.tar.gz
+# Source1-md5:	c9c209fd9915c9d0b0ab4c60e31a867d
+Source2:	https://github.com/jackaudio/tools/archive/%{version}/jack-tools-%{version}.tar.gz
+# Source2-md5:	25772ce858298fbb66146345c4394df5
+Source3:	https://github.com/jackaudio/example-clients/archive/7fa089095c81e81dacd2554ae3184acc7f2d58ed/jack-example-clients-%{version}.tar.gz
+# Source3-md5:	dd415d1923a7d118d4c2454a1b58ae47
 Patch0:		%{name}-gcc4.patch
 Patch1:		%{name}-readline.patch
 Patch2:		link.patch
+Patch3:		%{name}-update.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	celt-devel >= 0.5.0
+BuildRequires:	db-devel
 %{?with_apidocs:BuildRequires:	doxygen}
 %{?with_cap:BuildRequires:	libcap-devel}
 %{?with_ffado:BuildRequires:	libffado-devel >= 1.999.17}
@@ -179,17 +188,21 @@ Przykładowy klient zestawu JACK: jackrec. Jest wydzielony, ponieważ
 wymaga biblioteki libsndfile.
 
 %prep
-%setup -q
+%setup -q -n jack1-%{version} -a1 -a2 -a3
+%{__mv} headers-%{version}/* jack
+%{__mv} tools-%{version}/* tools
+%{__mv} example-clients-*/* example-clients
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
 %{__aclocal} -I config
+%{__autoconf}
 %{__autoheader}
 %{__automake}
-%{__autoconf}
 
 %configure \
 	--enable-dynsimd \
@@ -222,9 +235,13 @@ rm -rf $RPM_BUILD_ROOT
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
 # loadable modules
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/jack/*.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/jack/*.la
+%if %{with static_libs}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/jack/*.a
+%endif
 # test program
-%{__rm} $RPM_BUILD_ROOT%{_bindir}/jack_load_test
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/jack_load_test \
+	$RPM_BUILD_ROOT%{_mandir}/man1/jack_load_test.1
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -243,23 +260,27 @@ fi
 %defattr(644,root,root,755)
 # note: COPYING only specifies which parts fall under GPL and LGPL
 %doc AUTHORS TODO COPYING
-%{?with_cap:%attr(4755,root,root) %{_bindir}/jackstart}
-%attr(755,root,root) %{_bindir}/jackd
 %attr(755,root,root) %{_bindir}/jack_alias
 %attr(755,root,root) %{_bindir}/jack_evmon
 %attr(755,root,root) %{_bindir}/jack_iodelay
 %attr(755,root,root) %{_bindir}/jack_load
 %attr(755,root,root) %{_bindir}/jack_midi_dump
+%attr(755,root,root) %{_bindir}/jack_property
 %attr(755,root,root) %{_bindir}/jack_session_notify
 %attr(755,root,root) %{_bindir}/jack_server_control
 %attr(755,root,root) %{_bindir}/jack_unload
+%attr(755,root,root) %{_bindir}/jackd
+%{?with_cap:%attr(4755,root,root) %{_bindir}/jackstart}
 %dir %{_libdir}/jack
-%attr(755,root,root) %{_libdir}/jack/a2j_in.so
 %attr(755,root,root) %{_libdir}/jack/jack_alsa.so
 %attr(755,root,root) %{_libdir}/jack/jack_alsa_midi.so
 %attr(755,root,root) %{_libdir}/jack/jack_dummy.so
 %attr(755,root,root) %{_libdir}/jack/jack_net.so
 %attr(755,root,root) %{_libdir}/jack/jack_oss.so
+%{_mandir}/man1/jack_iodelay.1*
+%{_mandir}/man1/jack_load.1*
+%{_mandir}/man1/jack_property.1*
+%{_mandir}/man1/jack_unload.1*
 %{_mandir}/man1/jackd.1*
 %{_mandir}/man1/jackstart.1*
 
@@ -329,7 +350,23 @@ fi
 %attr(755,root,root) %{_bindir}/jack_wait
 %attr(755,root,root) %{_libdir}/jack/inprocess.so
 %attr(755,root,root) %{_libdir}/jack/intime.so
+%{_mandir}/man1/alsa_in.1*
+%{_mandir}/man1/alsa_out.1*
+%{_mandir}/man1/jack_bufsize.1*
+%{_mandir}/man1/jack_connect.1*
+%{_mandir}/man1/jack_disconnect.1*
+%{_mandir}/man1/jack_freewheel.1*
+%{_mandir}/man1/jack_impulse_grabber.1*
+%{_mandir}/man1/jack_lsp.1*
+%{_mandir}/man1/jack_metro.1*
+%{_mandir}/man1/jack_monitor_client.1*
+%{_mandir}/man1/jack_netsource.1*
+%{_mandir}/man1/jack_samplerate.1*
+%{_mandir}/man1/jack_showtime.1*
+%{_mandir}/man1/jack_transport.1*
+%{_mandir}/man1/jack_wait.1*
 
 %files example-jackrec
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/jack_rec
+%{_mandir}/man1/jackrec.1*

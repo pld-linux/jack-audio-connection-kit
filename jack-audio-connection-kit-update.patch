@@ -1,0 +1,36 @@
+--- jack1-0.124.1/drivers/freebob/freebob_driver.c.orig	2014-01-22 21:25:41.000000000 +0100
++++ jack1-0.124.1/drivers/freebob/freebob_driver.c	2014-02-01 16:13:41.975609896 +0100
+@@ -38,8 +38,8 @@
+ 
+ #include <assert.h>
+ 
+-#include <jack/types.h"
+-#include <jack/engine.h>
++#include <jack/types.h>
++#include "engine.h"
+ #include <sysdeps/time.h>
+ 
+ #include "include/internal.h"
+--- jack1-0.124.1/jackd/jackstart.c.orig	2014-01-22 21:25:41.000000000 +0100
++++ jack1-0.124.1/jackd/jackstart.c	2014-02-01 15:29:39.569054121 +0100
+@@ -37,7 +37,7 @@
+ #undef _POSIX_SOURCE
+ #include <sys/capability.h>
+ 
+-#include "jack/start.h"
++#include "start.h"
+ #include "md5.h"
+ #include "jack_md5.h"
+ 
+--- jack1-0.124.1/libjack/client.c.orig	2014-01-22 21:25:41.000000000 +0100
++++ jack1-0.124.1/libjack/client.c	2014-02-01 15:25:05.769065611 +0100
+@@ -2343,7 +2343,8 @@ jack_activate (jack_client_t *client)
+                 VALGRIND_MEMSET (&req, 0, sizeof (req));
+ 
+ 		req.type = SetClientCapabilities;
+-		req.x.client_id = client->control->id;
++
++		jack_uuid_copy (&req.x.client_id, client->control->uuid);
+ 		req.x.cap_pid = client->control->pid;
+ 
+ 		jack_client_deliver_request (client, &req);
