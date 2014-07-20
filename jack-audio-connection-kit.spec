@@ -8,13 +8,14 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	1.9.9.5
+Version:	1.9.10
 Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
-#Source0Download: http://jackaudio.org/download
-Source0:	http://jackaudio.org/downloads/jack-%{version}.tar.bz2
-# Source0-md5:	6c9de6b89db9d7076fa2ce222816cf4c
+#Source0Download: http://jackaudio.org/downloads/
+Source0:	https://dl.dropboxusercontent.com/u/28869550/jack-%{version}.tar.bz2
+#Source0:	http://jackaudio.org/downloads/jack-%{version}.tar.bz2
+# Source0-md5:	4aeb91d7ae0cabce98355436ed4f217a
 Patch0:		jack-doxygen-output-dirs.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
