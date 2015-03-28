@@ -4,12 +4,12 @@
 %bcond_without	ffado		# don't build firewire (FFADO) driver
 %bcond_without	freebob		# don't build freebob driver
 %bcond_with	classic		# build also classic jackd server (see http://trac.jackaudio.org/wiki/JackDbusPackaging)
-#
+
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
 Version:	1.9.10
-Release:	3
+Release:	4
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 #Source0Download: http://jackaudio.org/downloads/
@@ -104,6 +104,9 @@ Summary:	JACK Audio Connection Kit API documentation
 Summary(pl.UTF-8):	Dokumentacja API JACK Audio Connection Kit
 Group:		Documentation
 Requires:	gtk-doc-common
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description apidocs
 JACK Audio Connection Kit API documentation.
