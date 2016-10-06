@@ -1,16 +1,16 @@
 - fix for "Unresolved symbols found"
 - avoid unnecessary linking with -ldb
---- jack1-0.124.1/jackd/Makefile.am.orig	2014-02-01 16:19:21.505595646 +0100
-+++ jack1-0.124.1/jackd/Makefile.am	2014-02-01 16:22:41.085587271 +0100
+--- jack-audio-connection-kit-0.125.0/jackd/Makefile.am.orig	2016-10-06 18:57:26.766926734 +0200
++++ jack-audio-connection-kit-0.125.0/jackd/Makefile.am	2016-10-06 18:58:38.250259246 +0200
 @@ -51,7 +51,7 @@
-         ../libjack/midiport.c ../libjack/ringbuffer.c ../libjack/shm.c \
-         ../libjack/thread.c ../libjack/time.c  ../libjack/transclient.c \
-         ../libjack/unlock.c ../libjack/uuid.c ../libjack/metadata.c
--libjackserver_la_LIBADD  = simd.lo -ldb @OS_LDFLAGS@ 
-+libjackserver_la_LIBADD  = simd.lo -ldb @OS_LDFLAGS@ $(CAP_LIBS)
+ libjackserver_la_CFLAGS = $(AM_CFLAGS)
+ 
+ libjackserver_la_SOURCES = engine.c clientengine.c transengine.c controlapi.c
+-libjackserver_la_LIBADD  = $(top_builddir)/libjack/simd.lo $(top_builddir)/libjack/libjackcommon.la $(top_builddir)/libjack/libjackdaemon.la -ldb @OS_LDFLAGS@
++libjackserver_la_LIBADD  = $(top_builddir)/libjack/simd.lo $(top_builddir)/libjack/libjackcommon.la $(top_builddir)/libjack/libjackdaemon.la -ldb $(CAP_LIBS) @OS_LDFLAGS@
  libjackserver_la_LDFLAGS  = -export-dynamic -version-info @JACK_SO_VERSION@
  
- simd.lo: $(srcdir)/../libjack/simd.c
+ man_MANS = jackd.1 jackstart.1
 --- jack1-0.124.1/configure.ac.orig	2014-02-01 16:33:36.412226435 +0100
 +++ jack1-0.124.1/configure.ac	2014-02-01 16:42:57.178869571 +0100
 @@ -232,7 +232,7 @@

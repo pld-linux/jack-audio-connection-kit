@@ -10,24 +10,18 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	0.124.1
+Version:	0.125.0
 Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 # http://jackaudio.org/download - outdated?
-#Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
-Source0:	https://github.com/jackaudio/jack1/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	5805ff4d4305f05a04a6cd9fa345733c
-Source1:	https://github.com/jackaudio/headers/archive/%{version}/jack-headers-%{version}.tar.gz
-# Source1-md5:	c9c209fd9915c9d0b0ab4c60e31a867d
-Source2:	https://github.com/jackaudio/tools/archive/%{version}/jack-tools-%{version}.tar.gz
-# Source2-md5:	25772ce858298fbb66146345c4394df5
-Source3:	https://github.com/jackaudio/example-clients/archive/7fa089095c81e81dacd2554ae3184acc7f2d58ed/jack-example-clients-%{version}.tar.gz
-# Source3-md5:	dd415d1923a7d118d4c2454a1b58ae47
+Source0:	http://jackaudio.org/downloads/%{name}-%{version}.tar.gz
+# Source0-md5:	d9b7e230aeae2d5b45c7a822b2d2dd15
 Patch0:		%{name}-gcc4.patch
 Patch1:		%{name}-readline.patch
 Patch2:		link.patch
 Patch3:		%{name}-update.patch
+Patch4:		%{name}-man.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
@@ -188,14 +182,12 @@ Przykładowy klient zestawu JACK: jackrec. Jest wydzielony, ponieważ
 wymaga biblioteki libsndfile.
 
 %prep
-%setup -q -n jack1-%{version} -a1 -a2 -a3
-%{__mv} headers-%{version}/* jack
-%{__mv} tools-%{version}/* tools
-%{__mv} example-clients-*/* example-clients
+%setup -q
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__libtoolize}
@@ -219,6 +211,7 @@ wymaga biblioteki libsndfile.
 	--enable-ensure-mlock \
 	--enable-preemption-check \
 	--enable-resize \
+	--disable-silent-rules \
 	--enable-timestamps \
 	--with-default-tmpdir=/tmp \
 	--with-html-dir=%{_gtkdocdir}/%{name}
