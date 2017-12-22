@@ -8,16 +8,14 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	1.9.10
-Release:	6
+Version:	1.9.12
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 #Source0Download: http://jackaudio.org/downloads/
-Source0:	https://dl.dropboxusercontent.com/u/28869550/jack-%{version}.tar.bz2
-#Source0:	http://jackaudio.org/downloads/jack-%{version}.tar.bz2
-# Source0-md5:	4aeb91d7ae0cabce98355436ed4f217a
-Patch0:		jack-doxygen-output-dirs.patch
-Patch1:		release_device_on_error.patch
+Source0:	https://github.com/jackaudio/jack2/releases/download/v%{version}/jack2-%{version}.tar.gz
+# Source0-md5:	6cb5dfea0586bcf009c733c4e4b04a03
+Patch0:		jack-freebob.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
@@ -173,9 +171,8 @@ Przykładowy klient zestawu JACK: jackrec. Jest wydzielony, ponieważ
 wymaga biblioteki libsndfile.
 
 %prep
-%setup -q -n jack-%{version}
+%setup -q -n jack2-%{version}
 %patch0 -p1
-%patch1 -p1
 
 %build
 export CFLAGS="%{rpmcflags} -I/usr/include/ncurses"
@@ -188,6 +185,7 @@ export LINKFLAGS="%{rpmldflags}"
 	%{?debug:--debug} \
 	--prefix=%{_prefix} \
 	--libdir=%{_libdir} \
+	--htmldir=%{_gtkdocdir}/%{name}/reference \
 	--alsa \
 	%{?with_classic:--classic} \
 	--dbus \
@@ -200,14 +198,13 @@ export LINKFLAGS="%{rpmldflags}"
 %install
 rm -rf $RPM_BUILD_ROOT
 
-HTML_DIR=%{_gtkdocdir}/%{name}/reference \
 ./waf install \
 	--destdir=$RPM_BUILD_ROOT
 
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
 # For compatibility with jack1
-mv $RPM_BUILD_ROOT%{_bindir}/jack_rec $RPM_BUILD_ROOT%{_bindir}/jackrec
+%{__mv} $RPM_BUILD_ROOT%{_bindir}/jack_rec $RPM_BUILD_ROOT%{_bindir}/jackrec
 
 # not built or packaged
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/jack_impulse_grabber.1 \
@@ -242,6 +239,7 @@ fi
 %attr(755,root,root) %{_bindir}/jack_net_slave
 %attr(755,root,root) %{_bindir}/jack_server_control
 %attr(755,root,root) %{_bindir}/jack_session_notify
+%attr(755,root,root) %{_bindir}/jack_simdtests
 %attr(755,root,root) %{_bindir}/jack_test
 %attr(755,root,root) %{_bindir}/jack_unload
 %{?with_classic:%attr(755,root,root) %{_bindir}/jackd}
@@ -254,6 +252,7 @@ fi
 %attr(755,root,root) %{_libdir}/jack/jack_loopback.so
 %attr(755,root,root) %{_libdir}/jack/jack_netone.so
 %attr(755,root,root) %{_libdir}/jack/jack_net.so
+%attr(755,root,root) %{_libdir}/jack/jack_proxy.so
 %attr(755,root,root) %{_libdir}/jack/netadapter.so
 %attr(755,root,root) %{_libdir}/jack/netmanager.so
 %attr(755,root,root) %{_libdir}/jack/profiler.so
