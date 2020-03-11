@@ -1,21 +1,21 @@
 #
 # Conditional build:
-%bcond_without	apidocs		# don't generate documentation with doxygen
-%bcond_without	ffado		# don't build firewire (FFADO) driver
-%bcond_without	freebob		# don't build freebob driver
+%bcond_without	apidocs		# Doxygen docs
+%bcond_without	ffado		# firewire (FFADO) driver
 %bcond_with	classic		# build also classic jackd server (see http://trac.jackaudio.org/wiki/JackDbusPackaging)
 
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	1.9.12
-Release:	2
+Version:	1.9.14
+Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 #Source0Download: http://jackaudio.org/downloads/
-Source0:	https://github.com/jackaudio/jack2/releases/download/v%{version}/jack2-%{version}.tar.gz
-# Source0-md5:	6cb5dfea0586bcf009c733c4e4b04a03
-Patch0:		jack-freebob.patch
+#Source0:	https://github.com/jackaudio/jack2/releases/download/v%{version}/jack2-%{version}.tar.gz
+Source0:	https://github.com/jackaudio/jack2/archive/v%{version}/jack2-%{version}.tar.gz
+# Source0-md5:	b63b5cf65fc43ccf9585d274fe91069f
+Patch0:		jack-doxygen-fix.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
@@ -25,7 +25,6 @@ BuildRequires:	dbus-devel >= 1.0.0
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	expat-devel
 %{?with_ffado:BuildRequires:	libffado-devel >= 1.999.17}
-%{?with_freebob:BuildRequires:	libfreebob-devel >= 1.0.0}
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libsndfile-devel >= 1.0.0
 BuildRequires:	libstdc++-devel
@@ -120,26 +119,13 @@ License:	GPL v2+
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	libffado >= 1.999.17
+Obsoletes:	jack-driver-freebob < 1.9.13
 
 %description driver-firewire
 FireWire (FFADO) sound driver for JACK.
 
 %description driver-firewire -l pl.UTF-8
 Sterownik dźwięku FireWire (FFADO) dla JACK-a.
-
-%package driver-freebob
-Summary:	FreeBoB sound driver for JACK
-Summary(pl.UTF-8):	Sterownik dźwięku FreeBoB dla JACK-a
-License:	GPL v2+
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	libfreebob >= 1.0.0
-
-%description driver-freebob
-FreeBoB (BeBoB platform) sound driver for JACK.
-
-%description driver-freebob -l pl.UTF-8
-Sterownik dźwięku FreeBoB (do platformy BeBoB) dla JACK-a.
 
 %package example-clients
 Summary:	Example clients that use JACK
@@ -190,8 +176,7 @@ export LINKFLAGS="%{rpmldflags}"
 	%{?with_classic:--classic} \
 	--dbus \
 	%{?with_apidocs:--doxygen} \
-	%{?with_ffado:--firewire} \
-	%{?with_freebob:--freebob}
+	%{?with_ffado:--firewire}
 
 ./waf build %{?_smp_mflags} -v
 
@@ -227,7 +212,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog README* TODO
+%doc AUTHORS.rst ChangeLog.rst README*
 %attr(755,root,root) %{_bindir}/jack_alias
 %attr(755,root,root) %{_bindir}/jack_control
 %attr(755,root,root) %{_bindir}/jack_cpu
@@ -291,12 +276,6 @@ fi
 %attr(755,root,root) %{_libdir}/jack/jack_firewire.so
 %endif
 
-%if %{with freebob}
-%files driver-freebob
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/jack/jack_freebob.so
-%endif
-
 %files example-clients
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/alsa_in
@@ -315,6 +294,7 @@ fi
 %attr(755,root,root) %{_bindir}/jack_monitor_client
 %attr(755,root,root) %{_bindir}/jack_multiple_metro
 %attr(755,root,root) %{_bindir}/jack_netsource
+%attr(755,root,root) %{_bindir}/jack_property
 %attr(755,root,root) %{_bindir}/jack_samplerate
 %attr(755,root,root) %{_bindir}/jack_showtime
 %attr(755,root,root) %{_bindir}/jack_simple_client
@@ -334,6 +314,7 @@ fi
 %{_mandir}/man1/jack_metro.1*
 %{_mandir}/man1/jack_monitor_client.1*
 %{_mandir}/man1/jack_netsource.1*
+%{_mandir}/man1/jack_property.1*
 %{_mandir}/man1/jack_samplerate.1*
 %{_mandir}/man1/jack_showtime.1*
 %{_mandir}/man1/jack_simple_client.1*
