@@ -1,3 +1,4 @@
+# TODO: --iio (BR: gtkIOStream >= 1.4.0, eigen3 >= 3.1.2)
 #
 # Conditional build:
 %bcond_without	apidocs		# Doxygen docs
@@ -7,14 +8,14 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	1.9.14
+Version:	1.9.16
 Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 #Source0Download: http://jackaudio.org/downloads/
 #Source0:	https://github.com/jackaudio/jack2/releases/download/v%{version}/jack2-%{version}.tar.gz
 Source0:	https://github.com/jackaudio/jack2/archive/v%{version}/jack2-%{version}.tar.gz
-# Source0-md5:	b63b5cf65fc43ccf9585d274fe91069f
+# Source0-md5:	bdc547d3d56c4ab3bf7b1a32df6ca270
 Patch0:		jack-doxygen-fix.patch
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
@@ -31,7 +32,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel
-BuildRequires:	rpmbuild(macros) >= 1.98
+BuildRequires:	rpmbuild(macros) >= 1.752
 # with opus_custom interface
 BuildRequires:	opus-devel >= 1.0.3-2
 %{?with_apidocs:BuildRequires:	texlive-pdftex}
@@ -102,9 +103,7 @@ Summary:	JACK Audio Connection Kit API documentation
 Summary(pl.UTF-8):	Dokumentacja API JACK Audio Connection Kit
 Group:		Documentation
 Requires:	gtk-doc-common
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description apidocs
 JACK Audio Connection Kit API documentation.
