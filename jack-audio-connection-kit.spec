@@ -103,7 +103,7 @@ Summary:	JACK Audio Connection Kit API documentation
 Summary(pl.UTF-8):	Dokumentacja API JACK Audio Connection Kit
 Group:		Documentation
 Requires:	gtk-doc-common
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description apidocs
 JACK Audio Connection Kit API documentation.
