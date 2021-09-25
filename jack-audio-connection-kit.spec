@@ -8,15 +8,14 @@
 Summary:	The JACK Audio Connection Kit
 Summary(pl.UTF-8):	JACK - zestaw do połączeń audio
 Name:		jack-audio-connection-kit
-Version:	1.9.16
+Version:	1.9.19
 Release:	1
 License:	LGPL v2.1+ (libjack), GPL v2+ (the rest)
 Group:		Daemons
 #Source0Download: http://jackaudio.org/downloads/
 #Source0:	https://github.com/jackaudio/jack2/releases/download/v%{version}/jack2-%{version}.tar.gz
 Source0:	https://github.com/jackaudio/jack2/archive/v%{version}/jack2-%{version}.tar.gz
-# Source0-md5:	bdc547d3d56c4ab3bf7b1a32df6ca270
-Patch0:		jack-doxygen-fix.patch
+# Source0-md5:	ca263ffba14abce859c0ee7680faf510
 URL:		http://jackaudio.org/
 BuildRequires:	alsa-lib-devel >= 1.0.18
 BuildRequires:	autoconf >= 2.50
@@ -38,9 +37,9 @@ BuildRequires:	opus-devel >= 1.0.3-2
 %{?with_apidocs:BuildRequires:	texlive-pdftex}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib >= 1.0.18
-Obsoletes:	jack-audio-connection-kit-driver-alsa
-Obsoletes:	jack-audio-connection-kit-driver-iec61883
-Obsoletes:	jack-audio-connection-kit-static
+Obsoletes:	jack-audio-connection-kit-driver-alsa < 0.101.1-2
+Obsoletes:	jack-audio-connection-kit-driver-iec61883 < 0.99.0
+Obsoletes:	jack-audio-connection-kit-static < 1.9.7
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -157,7 +156,6 @@ wymaga biblioteki libsndfile.
 
 %prep
 %setup -q -n jack2-%{version}
-%patch0 -p1
 
 %build
 export CFLAGS="%{rpmcflags} -I/usr/include/ncurses"
