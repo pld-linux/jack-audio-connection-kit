@@ -3,6 +3,7 @@
 # Conditional build:
 %bcond_without	apidocs		# Doxygen docs
 %bcond_without	ffado		# firewire (FFADO) driver
+%bcond_without	zalsa		# zita-a2j/j2a client
 %bcond_with	classic		# build also classic jackd server (see http://trac.jackaudio.org/wiki/JackDbusPackaging)
 
 Summary:	The JACK Audio Connection Kit
@@ -35,6 +36,10 @@ BuildRequires:	rpmbuild(macros) >= 1.752
 # with opus_custom interface
 BuildRequires:	opus-devel >= 1.0.3-2
 %{?with_apidocs:BuildRequires:	texlive-pdftex}
+%if %{with zalsa}
+BuildRequires:	zita-alsa-pcmi-devel
+BuildRequires:	zita-resampler-devel
+%endif
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	alsa-lib >= 1.0.18
 Obsoletes:	jack-audio-connection-kit-driver-alsa < 0.101.1-2
@@ -173,7 +178,8 @@ export LINKFLAGS="%{rpmldflags}"
 	%{?with_classic:--classic} \
 	--dbus \
 	%{?with_apidocs:--doxygen} \
-	%{?with_ffado:--firewire}
+	%{?with_ffado:--firewire} \
+	%{!?with_zalsa:--no-zalsa}
 
 ./waf build %{?_smp_mflags} -v
 
@@ -238,6 +244,10 @@ fi
 %attr(755,root,root) %{_libdir}/jack/netadapter.so
 %attr(755,root,root) %{_libdir}/jack/netmanager.so
 %attr(755,root,root) %{_libdir}/jack/profiler.so
+%if %{with zalsa}
+%attr(755,root,root) %{_libdir}/jack/zalsa_in.so
+%attr(755,root,root) %{_libdir}/jack/zalsa_out.so
+%endif
 %{_datadir}/dbus-1/services/org.jackaudio.service
 %{?with_classic:%{_mandir}/man1/jackd.1*}
 %{_mandir}/man1/jack_iodelay.1*
