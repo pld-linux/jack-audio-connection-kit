@@ -9,11 +9,11 @@
  alsa_driver_run_cycle (alsa_driver_t *driver)
  {
  	jack_engine_t *engine = driver->engine;
---- jack-audio-connection-kit-0.100.0/drivers/dummy/dummy_driver.c.orig	2004-10-15 04:49:18.000000000 +0000
-+++ jack-audio-connection-kit-0.100.0/drivers/dummy/dummy_driver.c	2005-11-25 12:31:33.311609040 +0000
-@@ -62,7 +62,7 @@
- 	return driver->period_size;
+--- jack1-0.126.0/drivers/dummy/dummy_driver.c.orig	2023-03-28 18:22:54.887657332 +0200
++++ jack1-0.126.0/drivers/dummy/dummy_driver.c	2023-03-28 18:24:19.230533741 +0200
+@@ -213,7 +213,7 @@ static int dummy_driver_nt_start (dummy_
  }
+ #endif
  
 -static inline int
 +static int

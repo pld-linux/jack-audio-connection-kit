@@ -22,14 +22,13 @@
  #include "md5.h"
  #include "jack_md5.h"
  
---- jack1-0.124.1/libjack/client.c.orig	2014-01-22 21:25:41.000000000 +0100
-+++ jack1-0.124.1/libjack/client.c	2014-02-01 15:25:05.769065611 +0100
-@@ -2343,7 +2343,8 @@ jack_activate (jack_client_t *client)
-                 VALGRIND_MEMSET (&req, 0, sizeof (req));
+--- jack1-0.126.0/libjack/client.c.orig	2023-03-28 18:25:33.333465624 +0200
++++ jack1-0.126.0/libjack/client.c	2023-03-28 18:26:40.826433316 +0200
+@@ -2439,7 +2439,7 @@ jack_activate (jack_client_t *client)
+ 		 */
  
  		req.type = SetClientCapabilities;
 -		req.x.client_id = client->control->id;
-+
 +		jack_uuid_copy (&req.x.client_id, client->control->uuid);
  		req.x.cap_pid = client->control->pid;
  
